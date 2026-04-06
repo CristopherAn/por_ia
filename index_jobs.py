@@ -7,7 +7,7 @@ import glob
 from typing import Dict, Any, List
 
 import rag_utils
-from utils.common import load_config_file
+from utils.common import load_config_file, read_text_file
 
 
 DEFAULT_CONFIG_PATH = "./config/rag_config.json"
@@ -80,7 +80,7 @@ def main():
     parser.add_argument("--reset-db", action="store_true", help="Resetear la base de datos vectorial")
 
     args = parser.parse_args()
-    settings = rag_utils.settings_from_dict(load_config_file(args.config, {}).get("rag", {}))
+    settings = rag_utils.settings_from_dict(load_config_file(args.config).get("rag", {}))
     if args.reset_db:
         settings = rag_utils.settings_from_dict({"reset_db": True}, base=settings)
 
@@ -90,7 +90,7 @@ def main():
     embeddings = rag_utils.get_embeddings(settings)
     log_done(t0)
 
-    match_cfg = load_config_file(args.config, {}).get("match", {})
+    match_cfg = load_config_file(args.config).get("match", {})
     jobs = resolve_job_list(match_cfg)
 
     if not jobs:
@@ -105,7 +105,7 @@ def main():
         print(f"\n  [{i}/{len(jobs)}] Job: {source}")
 
         if source.lower().endswith(".txt") and os.path.exists(source):
-            text = rag_utils.read_text_file(source)
+            text = read_text_file(source)
         else:
             text = load_or_fetch_text(source, settings, dataset_prefix="job", refresh=bool(args.refresh))
 

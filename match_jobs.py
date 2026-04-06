@@ -127,10 +127,10 @@ def invoke_match_llm(
     llm,
     profile_text: str,
     job_text: str,
-    job_url: str,
+    job_source: str,
     prompt_template: str,
 ) -> Dict[str, Any]:
-    prompt = prompt_template.format(profile=profile_text, job=job_text, job_url=job_url)
+    prompt = prompt_template.format(profile=profile_text, job=job_text, job_source=job_source)
 
     t0 = log_step("llm.invoke")
     result = llm.invoke(prompt)
@@ -253,7 +253,7 @@ def main():
     rag_utils.validate_env(settings)
     log_done(t0, f"provider={settings.provider} ollama_base_url={settings.ollama_base_url}")
 
-    profile_source = match_cfg.get("profile_text_path") or match_cfg.get("profile_text") or "inline"
+    profile_source = match_cfg.get("profile_text_path") or match_cfg.get("profile_text") or match_cfg.get("profile_url") or "inline"
     jobs = resolve_job_list(match_cfg)
     output_path = match_cfg.get("output_path", "./outputs/job_match_report.json")
     prompt_template = match_cfg.get("prompt_template")
@@ -346,7 +346,7 @@ def main():
             print(f"    ERROR total_job_time={fmt_s(time.perf_counter() - t_job)} -> {type(e).__name__}: {e}")
 
     report: Dict[str, Any] = {
-        "profile_url": profile_url,
+        "profile_source": profile_source,
         "jobs_count": len(jobs),
         "results": results,
         "errors": errors,

@@ -36,9 +36,11 @@ DEFAULT_OLLAMA_BASE_URL = os.getenv(
     os.getenv("RAG_OLLAMA_BASE_URL", "http://localhost:11434"),
 )
 DEFAULT_OLLAMA_CHAT_MODEL = os.getenv("RAG_OLLAMA_CHAT_MODEL", "llama3.1")
+DEFAULT_CHAT_MODEL = DEFAULT_OLLAMA_CHAT_MODEL
 DEFAULT_OLLAMA_EMBEDDING_MODEL = os.getenv(
     "RAG_OLLAMA_EMBEDDING_MODEL", "nomic-embed-text"
 )
+DEFAULT_EMBEDDING_MODEL = DEFAULT_OLLAMA_EMBEDDING_MODEL
 DEFAULT_CHUNK_SIZE = int(os.getenv("RAG_CHUNK_SIZE", "1000"))
 DEFAULT_CHUNK_OVERLAP = int(os.getenv("RAG_CHUNK_OVERLAP", "200"))
 DEFAULT_K = int(os.getenv("RAG_TOP_K", "4"))
@@ -154,7 +156,9 @@ def get_embeddings(settings: RAGSettings):
             base_url=settings.ollama_base_url,
         )
 
-    return OpenAIEmbeddings(model=settings.embedding_model)
+    raise ValueError(
+        f"Proveedor no soportado: {provider}. Solo se soporta 'ollama'."
+    )
 
 
 def get_llm(settings: RAGSettings):
