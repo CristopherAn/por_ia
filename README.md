@@ -1,53 +1,100 @@
 # RAG Matching de Empleos - Ollama
 
-Este proyecto procesa archivos locales de perfiles y descripciones de trabajos para hacer matching usando **RAG** (retrieval + generación) con **Chroma**.
+Este proyecto procesa archivos locales (.txt) de perfiles y descripciones de trabajos para hacer matching usando **RAG** (retrieval + generación) con **Chroma** y **Ollama**.
 
 Soporta el proveedor:
-
 - `ollama` (local, por defecto `http://localhost:11434`)
 
-## Arquitectura
+## Arquitectura (Indexación → Matching)
 
 ```mermaid
 flowchart TD
     A[Usuario<br/>Inicia el proceso] --> B[Configuración<br/>Carga settings desde rag_config.json<br/>Archivo: config/rag_config.json]
-    B --> C[Inputs<br/>Archivos de Jobs desde ./inputs/<br/>Jobs: job_*.txt<br/>Archivos: inputs/]
+    B --> C[Inputs<br/>Archivos de Jobs desde ./inputs/<br/>Jobs: job_*.txt<br/>Profile: profile.txt<br/>Archivos: inputs/]
     
-    C --> D[Indexing<br/>Cargar modelo de embedding desde Ollama<br/>Chunk y generar embeddings<br/>Almacenar en ChromaDB<br/>Código: index_jobs.py]
+    C --> D[Indexing<br/>1. Cargar jobs desde archivos .txt<br/>2. Split en chunks<br/>3. Generar embeddings con Ollama<br/>4. Almacenar en ChromaDB<br/>Código: index_jobs.py<br/>Restablece DB cada indexación]
     
-    D --> E[Matching<br/>Cargar perfil y comparar con jobs indexados<br/>Retrieve context + evaluar con LLM<br/>Código: match_jobs.py]
+    D --> E[Matching<br/>1. Cargar perfil<br/>2. Retrieve chunks relevantes<br/>3. Evaluar con LLM<br/>4. Generar reporte JSON<br/>Código: match_jobs.py]
     
-    E --> F[Generar Reporte<br/>Crea job_match_report.json con métricas<br/>Construye perfil óptimo basado en gaps<br/>Código: generate_executive_report.py]
-    
-    G[Proveedor IA<br/>Ollama<br/>Modelos: llama3.2, nomic-embed-text<br/>Código: rag_utils.get_llm y get_embeddings]
+    G[Proveedor IA<br/>Ollama<br/>Embedding: nomic-embed-text<br/>Chat: llama3.2:3b<br/>http://localhost:11434]
     
     G --> D
     G --> E
     
-    F --> H[Output<br/>Reporte Ejecutivo con recomendaciones<br/>Archivo: outputs/job_match_report.json]
+    E --> H[Output<br/>job_match_report.json<br/>Archivo: outputs/]
 ```
 
-## Archivos Clave para Prompts y Configuración
+## Archivos Clave
 
-- **`config/rag_config.json`**: Contiene el `prompt_template` principal para el matching de empleos (evalúa fit_score, pros, gaps, etc.).
-- **`index_jobs.py`**: Script para indexar jobs en ChromaDB (etapa de "entrenamiento").
-- **`match_jobs.py`**: Script para matching de perfil vs jobs indexados (etapa de "predicción").
-- **`generate_executive_report.py`**: Genera el reporte ejecutivo y perfil óptimo.
+- **`config/rag_config.json`**: Configuración de RAG + prompt para evaluación de jobs
+- **`index_jobs.py`**: Indexa jobs en ChromaDB (entrena la base vectorial)
+- **`match_jobs.py`**: Evalúa perfil vs jobs indexados + genera reporte
+- **`rag_utils.py`**: Utilidades core: embeddings, split, indexing, LLM
 
 ## Flujo de Uso
 
-1. **Indexing (Entrenamiento)**: `python index_jobs.py` - Indexa los jobs en ChromaDB.
-2. **Matching (Predicción)**: `python match_jobs.py` - Evalúa el perfil contra los jobs indexados.
-3. **Reporte**: `python generate_executive_report.py` - Genera el reporte ejecutivo.
+```bash
+# 1. Indexación (entrena la BD - ELIMINA la anterior)
+python index_jobs.py --config config/rag_config.json
+
+# 2. Matching (evalúa perfil vs jobs + genera reporte)
+python match_jobs.py --config config/rag_config.json
+```
+
+**Nota**: Cada ejecución de `index_jobs.py` borra automáticamente la BD anterior (no requiere flag).
 
 ## Requisitos
 
-- Python 3.10+ (recomendado)
-- Ollama instalado y corriendo
+- Python 3.10+
+- Ollama instalado y ejecutándose localmente
+- Archivos de entrada (.txt) en `inputs/`:
+  - `profile.txt` - Perfil del candidato
+  - `job_*.txt` - Descripciones de trabajos (matching con glob)
 
-## Instalación (paquetes)
+## Instalación
 
-Instalá los paquetes necesarios (mínimo):
+```bash
+pip install -r requirements.txt
+```
+
+## Configuración (`config/rag_config.json`)
+
+```json
+{
+  "rag": {
+    "provider": "ollama",
+    "ollama_base_url": "http://localhost:11434",
+    "ollama_embedding_model": "nomic-embed-text",
+    "ollama_chat_model": "llama3.2:3b-instruct-fp16",
+    "persist_directory": "./chroma_url_db",
+    "chunk_size": 1000,
+    "chunk_overlap": 200
+  },
+  "match": {
+    "profile_text_path": "./inputs/profile.txt",
+    "job_text_glob": "./inputs/job_*.txt",
+    "output_path": "./outputs/job_match_report.json",
+    "prompt_template": "..."
+  }
+}
+```
+
+## Output (`job_match_report.json`)
+
+Ejemplo de resultado para cada job evaluado:
+```json
+{
+  "job_source": "./inputs/job_1.txt",
+  "fit_score": 78,
+  "seniority_guess": "senior",
+  "pros": ["Strong Python experience", "Leadership skills"],
+  "gaps": ["Missing Kubernetes", "No microservices"],
+  "missing_keywords": ["Docker", "CI/CD"],
+  "recommended_cv_bullets": ["Add Kubernetes project details"],
+  "final_recommendation": "apply"
+}
+```
+
 
 - `langchain`
 - `langchain-community`
