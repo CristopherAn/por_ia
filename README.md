@@ -17,7 +17,7 @@ flowchart TD
     D --> E[Index<br/>Cargar modelo de embedding desde Ollama<br/>Generar embeddings para cada chunk<br/>Almacenar vectores en ChromaDB<br/>Código: rag_utils.index_chunks en rag_utils.py]
     
     E --> F[Matching<br/>Compara perfil vs jobs usando RAG Query<br/>Evalúa fit_score, pros, gaps<br/>Código: match_linkedin_jobs.py]
-    F --> G[Generar Reporte<br/>Crea job_match_report.json con métricas<br/>Genera recomendaciones<br/>Código: generate_executive_report.py]
+    F --> G[Generar Reporte<br/>Crea job_match_report.json con métricas<br/>Construye perfil óptimo basado en gaps<br/>Genera recomendaciones<br/>Código: generate_executive_report.py]
     
     H[Proveedor IA<br/>Selecciona modelo] --> I[Ollama<br/>Local, gratuito<br/>Modelos: llama3.2, nomic-embed-text<br/>Código: rag_utils.get_llm y get_embeddings]
     

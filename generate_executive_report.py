@@ -37,6 +37,35 @@ def top_common(counter: Counter, n: int) -> List[Tuple[str, int]]:
     return [(k, v) for k, v in counter.most_common(n) if k]
 
 
+def build_optimal_profile(jobs: List[Dict[str, Any]]) -> str:
+    all_missing = []
+    all_gaps = []
+    for job in jobs:
+        all_missing.extend(norm_list(job.get("missing_keywords")))
+        all_gaps.extend(norm_list(job.get("gaps")))
+    
+    missing_counter = Counter(all_missing)
+    gaps_counter = Counter(all_gaps)
+    
+    top_missing = top_common(missing_counter, 10)
+    top_gaps = top_common(gaps_counter, 10)
+    
+    profile = "## Perfil Óptimo Recomendado\n\n"
+    profile += "Basado en el análisis de gaps y keywords faltantes en las ofertas, aquí un perfil ideal para maximizar el fit:\n\n"
+    profile += "### Skills Técnicos Principales (a adquirir/mejorar)\n"
+    for skill, count in top_missing:
+        profile += f"- {skill} (mencionado en {count} ofertas)\n"
+    profile += "\n### Áreas de Mejora\n"
+    for gap, count in top_gaps:
+        profile += f"- {gap} (gap en {count} ofertas)\n"
+    profile += "\n### Sugerencias Generales\n"
+    profile += "- Enfócate en proyectos que demuestren experiencia en data engineering, ML y cloud.\n"
+    profile += "- Incluye métricas cuantitativas en tu CV (e.g., 'Reduje latency en 40%').\n"
+    profile += "- Considera certificaciones en AWS/GCP y herramientas como Spark, Kafka.\n\n"
+    
+    return profile
+
+
 def summarize_actions(job: Dict[str, Any]) -> List[str]:
     score = clamp_int(job.get("fit_score"), 0)
     gaps = norm_list(job.get("gaps"))
@@ -115,6 +144,10 @@ def generate_markdown(report: Dict[str, Any], top_common_n: int = 10) -> str:
         best = jobs_sorted[0]
         lines.append("\n### Recomendación rápida\n")
         lines.append(f"- Top 1: `{best.get('job_source')}` (score={clamp_int(best.get('fit_score'), 0)}, rec={best.get('final_recommendation')})")
+
+    # Agregar perfil óptimo
+    optimal_profile = build_optimal_profile(jobs_sorted)
+    lines.append(optimal_profile)
 
     lines.append("\n## Ranking (por score)\n")
     table_rows: List[List[str]] = [["#", "Job URL", "Score", "Senioridad", "Recomendación"]]
