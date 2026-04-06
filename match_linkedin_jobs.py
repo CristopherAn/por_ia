@@ -224,9 +224,9 @@ def main():
 
     parser.add_argument(
         "--provider",
-        choices=["openai", "ollama"],
+        choices=["ollama"],
         default=None,
-        help="Sobrescribe el provider del JSON (openai u ollama).",
+        help="Sobrescribe el provider del JSON (solo ollama).",
     )
     args = parser.parse_args()
 

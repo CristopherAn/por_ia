@@ -13,7 +13,6 @@ from typing import List, Optional, Dict, Any
 
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
 from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
@@ -31,9 +30,7 @@ except Exception:
 
 
 DEFAULT_PERSIST_DIRECTORY = os.getenv("RAG_PERSIST_DIRECTORY", "./chroma_url_db")
-DEFAULT_EMBEDDING_MODEL = os.getenv("RAG_EMBEDDING_MODEL", "text-embedding-3-large")
-DEFAULT_CHAT_MODEL = os.getenv("RAG_CHAT_MODEL", "gpt-5.2")
-DEFAULT_PROVIDER = os.getenv("RAG_PROVIDER", "openai")
+DEFAULT_PROVIDER = os.getenv("RAG_PROVIDER", "ollama")
 DEFAULT_OLLAMA_BASE_URL = os.getenv(
     "OLLAMA_BASE_URL",
     os.getenv("RAG_OLLAMA_BASE_URL", "http://localhost:11434"),
@@ -139,13 +136,9 @@ def load_documents(path: str) -> List[Document]:
 
 
 def validate_env(settings: RAGSettings) -> None:
-    if settings.provider.lower() == "openai" and not os.getenv("OPENAI_API_KEY"):
-        raise EnvironmentError(
-            "Falta OPENAI_API_KEY.\n"
-            "Linux/Mac:\n"
-            "  export OPENAI_API_KEY='tu_api_key'\n"
-            "Windows PowerShell:\n"
-            "  $env:OPENAI_API_KEY='tu_api_key'"
+    if settings.provider.lower() == "ollama" and OllamaEmbeddings is None:
+        raise ImportError(
+            "No se encontró langchain_ollama. Instálalo con: pip install langchain-ollama"
         )
 
 
@@ -176,13 +169,7 @@ def get_llm(settings: RAGSettings):
             base_url=settings.ollama_base_url,
         )
 
-    try:
-        return ChatOpenAI(model=settings.chat_model)
-    except Exception:
-        try:
-            return init_chat_model(settings.chat_model, model_provider="openai")
-        except TypeError:
-            return init_chat_model(settings.chat_model)
+    raise ValueError(f"Proveedor no soportado: {provider}. Solo se soporta 'ollama'.")
 
 
 def load_url_documents(url: str) -> List[Document]:

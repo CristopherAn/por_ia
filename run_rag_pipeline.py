@@ -56,9 +56,9 @@ def main():
 
     parser.add_argument(
         "--provider",
-        choices=["openai", "ollama"],
+        choices=["ollama"],
         default=None,
-        help="Sobrescribe provider del config",
+        help="Sobrescribe provider del config (solo ollama)",
     )
     parser.add_argument("--persist-directory", default=None)
     parser.add_argument("--artifacts-dir", default=None)

@@ -1,16 +1,19 @@
-# RAG URL (LangChain) - OpenAI / Ollama
+# RAG Matching de Empleos - Ollama
 
-Este proyecto indexa el contenido de una **URL pública** y permite hacer preguntas usando **RAG** (retrieval + generación) con **Chroma**.
+Este proyecto procesa archivos locales de perfiles y descripciones de trabajos para hacer matching usando **RAG** (retrieval + generación) con **Chroma**.
 
-Soporta dos proveedores:
+Soporta el proveedor:
 
-- `openai` (requiere `OPENAI_API_KEY`)
 - `ollama` (local, por defecto `http://localhost:11434`)
+
+## Arquitectura
+
+Ver el diagrama de componentes en [doc/diagram.md](doc/diagram.md).
 
 ## Requisitos
 
 - Python 3.10+ (recomendado)
-- Ollama instalado y corriendo (si usás `--provider ollama`)
+- Ollama instalado y corriendo
 
 ## Instalación (paquetes)
 
@@ -19,10 +22,9 @@ Instalá los paquetes necesarios (mínimo):
 - `langchain`
 - `langchain-community`
 - `langchain-text-splitters`
-- `langchain-openai`
 - `langchain-chroma`
 - `chromadb`
-- `langchain-ollama` (solo si usás Ollama)
+- `langchain-ollama`
 
 Alternativa: podés usar Docker/Compose (ver sección "Docker").
 
@@ -32,7 +34,6 @@ El archivo `./config/rag_config.json` contiene defaults del proyecto. Podés cam
 
 Variables de entorno útiles:
 
-- `OPENAI_API_KEY` (solo para OpenAI)
 - `RAG_PROVIDER`
 - `RAG_PERSIST_DIRECTORY`
 - `RAG_ARTIFACTS_DIR`
