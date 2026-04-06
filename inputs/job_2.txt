@@ -1,34 +1,57 @@
-Business Analyst
-ABASTIBLE S.A.  Las Condes, Santiago Metropolitan Region, Chile
-2 days ago   Over 200 applicants
-  
-See who ABASTIBLE S.A. has hired for this role
-
-Apply
-Save
-
-¡Súmate a Abastible como Business Analyst!
-
-¿Te apasiona transformar datos en decisiones que impacten el negocio? ¿Te motiva entender el comportamiento de los clientes y optimizar cada punto del viaje? Entonces esta oportunidad es para ti.
-
-En Abastible, estamos buscando un Business Analyst para integrarse a la Gerencia de Advanced Analytics (Growth & Development), un rol clave donde podrás generar impacto real en la estrategia comercial.
-
-¿Cuál será tu desafío?
-
-Serás protagonista en el análisis de campañas, canales y funnels comerciales, identificando oportunidades de mejora en conversión, retención y ventas. Tu trabajo permitirá generar insights accionables que guíen decisiones estratégicas y potencien el crecimiento del negocio.
-
-¿Qué harás?
-
-Analizar el recorrido de clientes en distintos canales (App, Web, WhatsApp, Call Center)
-Detectar fricciones y oportunidades en el funnel comercial
-Participar en experimentos y A/B testing para optimizar resultados
-Construir reportes y visualizaciones claras para la toma de decisiones
-Colaborar con equipos de Marketing, Comercial, Canales y Producto
-Definir métricas y criterios de evaluación para iniciativas de crecimiento
-¿Por qué unirte?
-
-Porque serás parte de un equipo donde los datos se convierten en decisiones reales. Tendrás la oportunidad de influir directamente en el negocio, aprender constantemente y trabajar en un entorno colaborativo, dinámico y orientado a resultados.
+¡En Banco Ripley Chile estamos en búsqueda de un/a Head Data Scientist! 🔍🚀📊
 
 
 
-Si te motiva generar impacto, cuestionar lo establecido y llevar el análisis al siguiente nivel, ¡queremos conocerte!
+Buscamos al próximo Head Data Scientist para liderar el desarrollo de capacidades de analítica avanzada y modelos predictivos dentro del área Analytics y BI de banco. 
+
+La posición tendrá un rol clave en la identificación, desarrollo e implementación de modelos de ciencia de datos que generen valor e impacto económico para el negocio. 🙌💡
+
+
+
+¿Cuál será tu principal desafío? 🚀🧠
+
+El rol lidera el equipo de data scientists en proyectos analíticos, coordina la implementación de modelos predictivos y trabaja estrechamente con otras áreas de la empresa para apoyar la estrategia de negocios y la toma de decisiones. Supervisa el diseño, la construcción y el despliegue de soluciones de machine learning y analítica.
+
+
+
+¿Qué harás en este rol? 📈
+
+Supervisar y guiar al equipo de data scientists en el desarrollo y mejora de modelos predictivos y algoritmos de machine learning. 
+Colaborar con los líderes de otras áreas para entender sus necesidades y traducirlas en proyectos analíticos que generen impacto en el negocio. 🤝📊
+Evaluar y seleccionar herramientas y tecnologías de análisis de datos para optimizar la eficiencia y precisión en los modelos. ⚙️📈
+Asegurar la calidad y consistencia de los datos utilizados en los análisis y promover prácticas de gobernanza de datos. 🧩🔐
+Generar reportes y comunicar los hallazgos del equipo al liderazgo de la organización, brindando insights que soporten decisiones estratégicas. 📢📊
+Medir y reportar el impacto económico de las iniciativas analíticas. 💰📉
+
+
+¿Qué valoramos en tu postulación? 🎯📚
+
+Grado en Estadística, Matemáticas, Ingeniería, Ciencias de la Computación o campo relacionado. 🎓
+
+Experiencia mínima de 5-7 años en análisis de datos y modelado en entornos financieros, retail o similar. 💼 (excluyente)
+
+Conocimientos avanzados de Python, R y SQL, así como experiencia en herramientas de visualización de datos. 📊 (excluyentes)
+
+Habilidades de liderazgo, capacidad de gestión de proyectos y experiencia en la conducción de equipos de datos. 🧭👥
+
+Excelentes habilidades de comunicación y capacidad para traducir insights analíticos a términos de negocio. 🗣️💡
+
+
+
+¿Por qué trabajar en Banco Ripley? 💜✨
+
+Porque creemos en el talento y el desarrollo de nuestros equipos. Te ofrecemos:
+
+ 🔹 Capacitaciones y entrenamiento enfocados en tu crecimiento profesional. 
+
+ 🔹 Tasa preferencial en productos Banco Ripley. 
+
+ 🔹 Seguro complementario de salud. 
+
+ 🔹 Descuentos en Tiendas Ripley. 
+
+
+
+En Ripley y Banco Ripley valoramos la diversidad e inclusión. En el marco de la Ley 21.015, invitamos a todas las personas a postular y, si necesitas algún ajuste razonable durante el proceso, no dudes en indicarlo. 
+
+📢 ¡Postula y lidera el desarrollo de la analítica avanzada en Banco Ripley!

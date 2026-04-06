@@ -253,14 +253,14 @@ def main():
     rag_utils.validate_env(settings)
     log_done(t0, f"provider={settings.provider} ollama_base_url={settings.ollama_base_url}")
 
-    profile_url = match_cfg.get("profile_url")
+    profile_source = match_cfg.get("profile_text_path") or match_cfg.get("profile_text") or "inline"
     jobs = resolve_job_list(match_cfg)
     output_path = match_cfg.get("output_path", "./outputs/job_match_report.json")
     prompt_template = match_cfg.get("prompt_template")
 
-    if not (profile_url or match_cfg.get("profile_text") or match_cfg.get("profile_text_path")):
+    if not (match_cfg.get("profile_text") or match_cfg.get("profile_text_path")):
         raise ValueError(
-            "Falta match.profile_url (o alternativa match.profile_text / match.profile_text_path) en rag_config.json"
+            "Falta match.profile_text_path (o alternativa match.profile_text) en rag_config.json"
         )
     if not jobs:
         raise ValueError(
@@ -278,12 +278,12 @@ def main():
     log_done(t0)
 
     print("\n[1/2] Cargando perfil")
-    if profile_url:
-        print(f"    source=url: {profile_url}")
-    elif match_cfg.get("profile_text_path"):
+    if match_cfg.get("profile_text_path"):
         print(f"    source=file: {match_cfg.get('profile_text_path')}")
-    else:
+    elif match_cfg.get("profile_text"):
         print("    source=inline")
+    else:
+        print(f"    source=unknown")
 
     t0 = time.perf_counter()
     profile_text = resolve_profile_text(match_cfg, settings, refresh=bool(args.refresh))
@@ -336,13 +336,13 @@ def main():
                 llm=llm,
                 profile_text=profile_context,
                 job_text=job_context,
-                job_url=source,
+                job_source=source,
                 prompt_template=prompt_template,
             )
             results.append(match)
             print(f"    OK total_job_time={fmt_s(time.perf_counter() - t_job)}")
         except Exception as e:
-            errors.append({"job_url": job_item.get("source"), "error": f"{type(e).__name__}: {e}"})
+            errors.append({"job_source": job_item.get("source"), "error": f"{type(e).__name__}: {e}"})
             print(f"    ERROR total_job_time={fmt_s(time.perf_counter() - t_job)} -> {type(e).__name__}: {e}")
 
     report: Dict[str, Any] = {

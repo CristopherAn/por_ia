@@ -30,7 +30,7 @@ def norm_list(x: Any) -> List[str]:
 
 
 def job_sort_key(item: Dict[str, Any]) -> Tuple[int, str]:
-    return (clamp_int(item.get("fit_score"), 0), str(item.get("job_url") or ""))
+    return (clamp_int(item.get("fit_score"), 0), str(item.get("job_source") or ""))
 
 
 def top_common(counter: Counter, n: int) -> List[Tuple[str, int]]:
@@ -114,7 +114,7 @@ def generate_markdown(report: Dict[str, Any], top_common_n: int = 10) -> str:
     if jobs_sorted:
         best = jobs_sorted[0]
         lines.append("\n### Recomendación rápida\n")
-        lines.append(f"- Top 1: `{best.get('job_url')}` (score={clamp_int(best.get('fit_score'), 0)}, rec={best.get('final_recommendation')})")
+        lines.append(f"- Top 1: `{best.get('job_source')}` (score={clamp_int(best.get('fit_score'), 0)}, rec={best.get('final_recommendation')})")
 
     lines.append("\n## Ranking (por score)\n")
     table_rows: List[List[str]] = [["#", "Job URL", "Score", "Senioridad", "Recomendación"]]
@@ -122,7 +122,7 @@ def generate_markdown(report: Dict[str, Any], top_common_n: int = 10) -> str:
         table_rows.append(
             [
                 str(idx),
-                md_escape(str(j.get("job_url") or "")),
+                md_escape(str(j.get("job_source") or "")),
                 str(clamp_int(j.get("fit_score"), 0)),
                 md_escape(str(j.get("seniority_guess") or "unknown")),
                 md_escape(str(j.get("final_recommendation") or "unknown")),
@@ -162,7 +162,7 @@ def generate_markdown(report: Dict[str, Any], top_common_n: int = 10) -> str:
     lines.append("\n## Detalle por job\n")
 
     for j in jobs_sorted:
-        url = str(j.get("job_url") or "")
+        url = str(j.get("job_source") or "")
         score = clamp_int(j.get("fit_score"), 0)
         seniority = str(j.get("seniority_guess") or "unknown")
         rec = str(j.get("final_recommendation") or "unknown")
