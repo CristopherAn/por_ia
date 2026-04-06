@@ -14,7 +14,7 @@ flowchart TD
     B --> C[Inputs<br/>Archivos de Jobs & Perfil desde ./inputs/<br/>Perfil: profile.txt<br/>Jobs: job_*.txt<br/>Archivos: inputs/]
     
     C --> D[Chunk<br/>Divide textos en fragmentos manejables<br/>Usa chunk_size y overlap<br/>Código: rag_utils.split_documents en utils/rag_utils.py]
-    D --> E[Index<br/>Genera embeddings con Ollama<br/>Almacena en ChromaDB<br/>Código: rag_utils.index_chunks en rag_utils.py]
+    D --> E[Index<br/>Cargar modelo de embedding desde Ollama<br/>Generar embeddings para cada chunk<br/>Almacenar vectores en ChromaDB<br/>Código: rag_utils.index_chunks en rag_utils.py]
     
     E --> F[Matching<br/>Compara perfil vs jobs usando RAG Query<br/>Evalúa fit_score, pros, gaps<br/>Código: match_linkedin_jobs.py]
     F --> G[Generar Reporte<br/>Crea job_match_report.json con métricas<br/>Genera recomendaciones<br/>Código: generate_executive_report.py]
