@@ -1,11 +1,11 @@
-import os
 import argparse
 import glob
+import os
 import time
-from typing import Dict, Any, List
+from typing import Dict, List
 
 import rag_utils
-from utils.common import load_config_file, read_text_file
+from utils.common import load_config_file, normalize_local_path, read_text_file
 
 
 DEFAULT_CONFIG_PATH = "./config/rag_config.json"
@@ -27,39 +27,44 @@ def log_done(t0: float, label: str = "done") -> float:
 
 
 def resolve_job_list(match_cfg: dict) -> List[Dict[str, str]]:
-    """Resuelve la lista de jobs desde glob pattern."""
     job_text_glob = match_cfg.get("job_text_glob")
     if isinstance(job_text_glob, str) and job_text_glob.strip():
         paths = sorted(glob.glob(job_text_glob))
         if paths:
-            return [{"job_id": str(p), "source": str(p)} for p in paths]
-    
+            return [
+                {
+                    "job_id": normalize_local_path(path),
+                    "source": os.path.normpath(path),
+                    "job_source": normalize_local_path(path),
+                }
+                for path in paths
+            ]
+
     raise ValueError("Falta match.job_text_glob en rag_config.json")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Indexa jobs en ChromaDB (etapa de 'entrenamiento'). Se crea una nueva indexación cada vez.")
-    parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Archivo de configuración JSON")
-
+    parser = argparse.ArgumentParser(
+        description="Indexa jobs en ChromaDB. Cada nueva indexacion reemplaza la anterior."
+    )
+    parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Archivo de configuracion JSON")
     args = parser.parse_args()
+
     config = load_config_file(args.config)
     rag_cfg = config.get("rag", {})
     match_cfg = config.get("match", {})
-    
-    settings = rag_utils.settings_from_dict(rag_cfg)
-    
-    # Siempre resetear la BD anterior: cada nueva indexación borra la antigua
-    settings = rag_utils.settings_from_dict({"reset_db": True}, base=settings)
 
+    settings = rag_utils.settings_from_dict(rag_cfg)
+    settings = rag_utils.settings_from_dict({"reset_db": True}, base=settings)
     rag_utils.validate_env(settings)
 
     t0 = log_step("init embeddings")
-    embeddings = rag_utils.get_embeddings(settings)
+    rag_utils.get_embeddings(settings)
     log_done(t0)
 
     jobs = resolve_job_list(match_cfg)
     if not jobs:
-        raise ValueError("No jobs encontrados. Configura match.job_text_glob en rag_config.json (ej: ./inputs/job_*.txt)")
+        raise ValueError("No jobs encontrados. Configura match.job_text_glob en rag_config.json.")
 
     print(f"\n[INDEXING] Procesando {len(jobs)} jobs")
     print(f"    Nota: Se elimina la BD anterior en: {settings.persist_directory}")
@@ -67,18 +72,18 @@ def main():
     all_chunks = []
     for i, job_item in enumerate(jobs, start=1):
         source = job_item["source"]
-        print(f"\n  [{i}/{len(jobs)}] Job: {source}")
+        job_source = job_item["job_source"]
+        job_id = job_item["job_id"]
+        print(f"\n  [{i}/{len(jobs)}] Job: {job_source}")
 
         if not (source.lower().endswith(".txt") and os.path.exists(source)):
             raise FileNotFoundError(f"Solo se soportan archivos .txt locales: {source}")
-        
-        text = read_text_file(source)
-        job_id = job_item["job_id"]
 
+        text = read_text_file(source)
         t0 = time.perf_counter()
         docs = rag_utils.split_documents(
-            [rag_utils.Document(page_content=text, metadata={"job_id": job_id, "source": source})],
-            settings
+            [rag_utils.Document(page_content=text, metadata={"job_id": job_id, "source": job_source})],
+            settings,
         )
         all_chunks.extend(docs)
         print(f"    chunked {len(docs)} chunks ({fmt_s(time.perf_counter() - t0)})")

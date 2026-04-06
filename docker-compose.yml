@@ -5,11 +5,9 @@ services:
     volumes:
       - ./:/app
     environment:
-      USER_AGENT: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
       POSTHOG_DISABLED: "1"
       ANONYMIZED_TELEMETRY: "False"
       CHROMA_ANONYMIZED_TELEMETRY: "False"
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
       RAG_PROVIDER: ollama
       RAG_OLLAMA_BASE_URL: http://host.docker.internal:11434
       RAG_OLLAMA_CHAT_MODEL: llama3.2:3b-instruct-fp16
