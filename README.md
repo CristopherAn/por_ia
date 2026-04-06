@@ -10,21 +10,21 @@ Soporta el proveedor:
 
 ```mermaid
 flowchart TD
-    A[Usuario] --> B[Configuración<br/>rag_config.json]
-    B --> C[Inputs<br/>Archivos de Jobs & Perfil<br/>desde ./inputs/]
+    A[Usuario<br/>Inicia el proceso] --> B[Configuración<br/>Carga settings desde rag_config.json<br/>Archivo: config/rag_config.json]
+    B --> C[Inputs<br/>Archivos de Jobs & Perfil desde ./inputs/<br/>Perfil: profile.txt<br/>Jobs: job_*.txt<br/>Archivos: inputs/]
     
-    C --> D[Chunk<br/>Dividir texto en fragmentos<br/>chunk_size & overlap]
-    D --> E[Index<br/>Generar embeddings<br/>y almacenar en ChromaDB]
+    C --> D[Chunk<br/>Divide textos en fragmentos manejables<br/>Usa chunk_size y overlap<br/>Código: rag_utils.split_documents en utils/rag_utils.py]
+    D --> E[Index<br/>Genera embeddings con Ollama<br/>Almacena en ChromaDB<br/>Código: rag_utils.index_chunks en rag_utils.py]
     
-    E --> F[Matching<br/>Comparar perfil vs jobs<br/>usando RAG Query]
-    F --> G[Generar Reporte<br/>job_match_report.json<br/>con fit_score, pros, gaps]
+    E --> F[Matching<br/>Compara perfil vs jobs usando RAG Query<br/>Evalúa fit_score, pros, gaps<br/>Código: match_linkedin_jobs.py]
+    F --> G[Generar Reporte<br/>Crea job_match_report.json con métricas<br/>Genera recomendaciones<br/>Código: generate_executive_report.py]
     
-    H[Proveedor IA] --> I[Ollama<br/>Local, gratuito]
+    H[Proveedor IA<br/>Selecciona modelo] --> I[Ollama<br/>Local, gratuito<br/>Modelos: llama3.2, nomic-embed-text<br/>Código: rag_utils.get_llm y get_embeddings]
     
     I --> E
     I --> F
     
-    G --> J[Output<br/>Reporte Ejecutivo<br/>con recomendaciones]
+    G --> J[Output<br/>Reporte Ejecutivo con acciones sugeridas<br/>Archivo: outputs/job_match_report.json]
 ```
 
 ## Archivos Clave para Prompts y Configuración
