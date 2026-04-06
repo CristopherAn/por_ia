@@ -11,27 +11,34 @@ Soporta el proveedor:
 ```mermaid
 flowchart TD
     A[Usuario<br/>Inicia el proceso] --> B[Configuración<br/>Carga settings desde rag_config.json<br/>Archivo: config/rag_config.json]
-    B --> C[Inputs<br/>Archivos de Jobs & Perfil desde ./inputs/<br/>Perfil: profile.txt<br/>Jobs: job_*.txt<br/>Archivos: inputs/]
+    B --> C[Inputs<br/>Archivos de Jobs desde ./inputs/<br/>Jobs: job_*.txt<br/>Archivos: inputs/]
     
-    C --> D[Chunk<br/>Divide textos en fragmentos manejables<br/>Usa chunk_size y overlap<br/>Código: rag_utils.split_documents en utils/rag_utils.py]
-    D --> E[Index<br/>Cargar modelo de embedding desde Ollama<br/>Generar embeddings para cada chunk<br/>Almacenar vectores en ChromaDB<br/>Código: rag_utils.index_chunks en rag_utils.py]
+    C --> D[Indexing<br/>Cargar modelo de embedding desde Ollama<br/>Chunk y generar embeddings<br/>Almacenar en ChromaDB<br/>Código: index_jobs.py]
     
-    E --> F[Matching<br/>Compara perfil vs jobs usando RAG Query<br/>Evalúa fit_score, pros, gaps<br/>Código: match_linkedin_jobs.py]
-    F --> G[Generar Reporte<br/>Crea job_match_report.json con métricas<br/>Construye perfil óptimo basado en gaps<br/>Genera recomendaciones<br/>Código: generate_executive_report.py]
+    D --> E[Matching<br/>Cargar perfil y comparar con jobs indexados<br/>Retrieve context + evaluar con LLM<br/>Código: match_jobs.py]
     
-    H[Proveedor IA<br/>Selecciona modelo] --> I[Ollama<br/>Local, gratuito<br/>Modelos: llama3.2, nomic-embed-text<br/>Código: rag_utils.get_llm y get_embeddings]
+    E --> F[Generar Reporte<br/>Crea job_match_report.json con métricas<br/>Construye perfil óptimo basado en gaps<br/>Código: generate_executive_report.py]
     
-    I --> E
-    I --> F
+    G[Proveedor IA<br/>Ollama<br/>Modelos: llama3.2, nomic-embed-text<br/>Código: rag_utils.get_llm y get_embeddings]
     
-    G --> J[Output<br/>Reporte Ejecutivo con acciones sugeridas<br/>Archivo: outputs/job_match_report.json]
+    G --> D
+    G --> E
+    
+    F --> H[Output<br/>Reporte Ejecutivo con recomendaciones<br/>Archivo: outputs/job_match_report.json]
 ```
 
 ## Archivos Clave para Prompts y Configuración
 
 - **`config/rag_config.json`**: Contiene el `prompt_template` principal para el matching de empleos (evalúa fit_score, pros, gaps, etc.).
-- **`match_linkedin_jobs.py`**: Script que ejecuta el matching usando el prompt_template de la config.
-- **`run_rag_pipeline.py`**: Permite preguntas ad-hoc con `--question` o modo chat con `--chat` (requiere adaptación para archivos locales).
+- **`index_jobs.py`**: Script para indexar jobs en ChromaDB (etapa de "entrenamiento").
+- **`match_jobs.py`**: Script para matching de perfil vs jobs indexados (etapa de "predicción").
+- **`generate_executive_report.py`**: Genera el reporte ejecutivo y perfil óptimo.
+
+## Flujo de Uso
+
+1. **Indexing (Entrenamiento)**: `python index_jobs.py` - Indexa los jobs en ChromaDB.
+2. **Matching (Predicción)**: `python match_jobs.py` - Evalúa el perfil contra los jobs indexados.
+3. **Reporte**: `python generate_executive_report.py` - Genera el reporte ejecutivo.
 
 ## Requisitos
 
