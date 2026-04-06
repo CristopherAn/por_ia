@@ -1,9 +1,6 @@
 import os
 import argparse
 import json
-import hashlib
-import time
-import glob
 import math
 from typing import Dict, Any, List
 
@@ -15,112 +12,48 @@ from langchain_core.documents import Document
 DEFAULT_CONFIG_PATH = "./config/rag_config.json"
 
 
-def env_ollama_base_url_present() -> bool:
-    return os.getenv("OLLAMA_BASE_URL") is not None or os.getenv("RAG_OLLAMA_BASE_URL") is not None
-
-
-def url_id(url: str) -> str:
-    return hashlib.sha256(url.strip().encode("utf-8")).hexdigest()[:16]
-
-
-def dataset_name(prefix: str, url: str) -> str:
-    return f"{prefix}_{url_id(url)}"
-
-
 def fmt_s(seconds: float) -> str:
     return f"{seconds:.2f}s"
 
 
 def log_step(label: str) -> float:
+    import time
     print(f"\n[STEP] {label}")
     return time.perf_counter()
 
 
 def log_done(t0: float, label: str = "done") -> float:
+    import time
     dt = time.perf_counter() - t0
     print(f"    {label} ({fmt_s(dt)})")
     return dt
 
 
-def load_or_fetch_text(url: str, settings: rag_utils.RAGSettings, dataset_prefix: str, refresh: bool) -> str:
-    name = dataset_name(dataset_prefix, url)
-    paths = rag_utils.artifacts_paths(settings, name=name)
-
-    if (not refresh) and os.path.exists(paths["docs"]):
-        t0 = log_step(f"cache hit -> {dataset_prefix} docs ({name})")
-        docs = rag_utils.load_documents(paths["docs"])
-        log_done(t0, f"loaded docs={len(docs)}")
-    else:
-        t0 = log_step(f"fetch -> {dataset_prefix} url ({name})")
-        docs = rag_utils.fetch_and_clean(url)
-        log_done(t0, f"fetched+cleaned docs={len(docs)}")
-
-        t1 = log_step(f"save -> {dataset_prefix} docs cache ({name})")
-        rag_utils.save_documents(docs, paths["docs"])
-        log_done(t1, f"saved -> {paths['docs']}")
-
-    return "\n\n".join([d.page_content for d in docs]).strip()
-
-
-def resolve_profile_text(match_cfg: dict, settings: rag_utils.RAGSettings, refresh: bool) -> str:
-    profile_text = match_cfg.get("profile_text")
-    if isinstance(profile_text, str) and profile_text.strip():
-        t0 = log_step("profile source=inline")
-        log_done(t0)
-        return profile_text.strip()
-
-    profile_text_path = match_cfg.get("profile_text_path")
-    if isinstance(profile_text_path, str) and profile_text_path.strip():
-        t0 = log_step(f"profile source=file -> {profile_text_path}")
-        text = read_text_file(profile_text_path)
-        log_done(t0, f"read chars={len(text)}")
-        return text
-
-    profile_url = match_cfg.get("profile_url")
-    if not profile_url:
-        raise ValueError(
-            "Falta match.profile_url (o alternativa match.profile_text / match.profile_text_path) en rag_config.json"
-        )
-
-    return load_or_fetch_text(profile_url, settings, dataset_prefix="profile", refresh=refresh)
-
-
-def resolve_job_text(match_cfg: dict, job_url: str, settings: rag_utils.RAGSettings, refresh: bool) -> str:
-    job_texts = match_cfg.get("job_texts")
-    if isinstance(job_texts, dict):
-        inline = job_texts.get(job_url)
-        if isinstance(inline, str) and inline.strip():
-            t0 = log_step("job source=inline")
-            log_done(t0)
-            return inline.strip()
-
-    job_text_paths = match_cfg.get("job_text_paths")
-    if isinstance(job_text_paths, dict):
-        p = job_text_paths.get(job_url)
-        if isinstance(p, str) and p.strip():
-            t0 = log_step(f"job source=file -> {p}")
-            text = read_text_file(p)
-            log_done(t0, f"read chars={len(text)}")
-            return text
-
-    return load_or_fetch_text(job_url, settings, dataset_prefix="job", refresh=refresh)
+def resolve_profile_text(profile_text_path: str) -> str:
+    """Carga el perfil desde un archivo local."""
+    if not profile_text_path or not profile_text_path.strip():
+        raise ValueError("Falta match.profile_text_path en rag_config.json")
+    
+    if not os.path.exists(profile_text_path):
+        raise FileNotFoundError(f"No existe el archivo de perfil: {profile_text_path}")
+    
+    t0 = log_step(f"profile source=file -> {profile_text_path}")
+    text = read_text_file(profile_text_path)
+    log_done(t0, f"read chars={len(text)}")
+    return text
 
 
 def resolve_job_list(match_cfg: dict) -> List[Dict[str, str]]:
-    job_text_files = match_cfg.get("job_text_files")
-    if isinstance(job_text_files, list) and job_text_files:
-        return [{"job_id": str(p), "source": str(p)} for p in job_text_files if str(p).strip()]
-
+    """Resuelve la lista de jobs desde glob pattern."""
+    import glob
+    
     job_text_glob = match_cfg.get("job_text_glob")
     if isinstance(job_text_glob, str) and job_text_glob.strip():
         paths = sorted(glob.glob(job_text_glob))
-        return [{"job_id": str(p), "source": str(p)} for p in paths]
-
-    job_urls = match_cfg.get("job_urls") or []
-    if isinstance(job_urls, list) and job_urls:
-        return [{"job_id": str(u), "source": str(u)} for u in job_urls if str(u).strip()]
-
-    return []
+        if paths:
+            return [{"job_id": str(p), "source": str(p)} for p in paths]
+    
+    raise ValueError("Falta match.job_text_glob en rag_config.json")
 
 
 def invoke_match_llm(
@@ -208,20 +141,16 @@ def retrieve_relevant_text(
 
 
 def main():
+    import time
+    
     parser = argparse.ArgumentParser(
-        description="Evalúa compatibilidad entre un perfil de LinkedIn y una lista de jobs (score + razones)."
+        description="Evalúa compatibilidad entre un perfil y una lista de jobs (score + razones)."
     )
     parser.add_argument(
         "--config",
         default=DEFAULT_CONFIG_PATH,
         help="Archivo de configuración JSON (por defecto: ./config/rag_config.json)",
     )
-    parser.add_argument(
-        "--refresh",
-        action="store_true",
-        help="Fuerza re-descargar perfil/jobs (ignora cache en rag_artifacts)",
-    )
-
     parser.add_argument(
         "--provider",
         choices=["ollama"],
@@ -242,29 +171,23 @@ def main():
 
     t0 = log_step("build settings")
     settings = rag_utils.settings_from_dict(rag_cfg)
-    if env_ollama_base_url_present() and settings.provider.lower() == "ollama":
-        settings = rag_utils.settings_from_dict(
-            {"ollama_base_url": rag_utils.DEFAULT_OLLAMA_BASE_URL},
-            base=settings,
-        )
-
     if args.provider:
         settings = rag_utils.settings_from_dict({"provider": args.provider}, base=settings)
     rag_utils.validate_env(settings)
     log_done(t0, f"provider={settings.provider} ollama_base_url={settings.ollama_base_url}")
 
-    profile_source = match_cfg.get("profile_text_path") or match_cfg.get("profile_text") or match_cfg.get("profile_url") or "inline"
+    profile_source = match_cfg.get("profile_text_path", "default")
     jobs = resolve_job_list(match_cfg)
     output_path = match_cfg.get("output_path", "./outputs/job_match_report.json")
     prompt_template = match_cfg.get("prompt_template")
 
-    if not (match_cfg.get("profile_text") or match_cfg.get("profile_text_path")):
+    if not match_cfg.get("profile_text_path"):
         raise ValueError(
-            "Falta match.profile_text_path (o alternativa match.profile_text) en rag_config.json"
+            "Falta match.profile_text_path en rag_config.json"
         )
     if not jobs:
         raise ValueError(
-            "Faltan jobs. Configurá match.job_text_glob (ej: ./inputs/job_*.txt) o match.job_text_files o match.job_urls."
+            "Faltan jobs. Configurá match.job_text_glob (ej: ./inputs/job_*.txt)."
         )
     if not prompt_template:
         raise ValueError("Falta match.prompt_template en rag_config.json")
@@ -278,18 +201,12 @@ def main():
     log_done(t0)
 
     print("\n[1/2] Cargando perfil")
-    if match_cfg.get("profile_text_path"):
-        print(f"    source=file: {match_cfg.get('profile_text_path')}")
-    elif match_cfg.get("profile_text"):
-        print("    source=inline")
-    else:
-        print(f"    source=unknown")
-
+    print(f"    source=file: {match_cfg.get('profile_text_path')}")
     t0 = time.perf_counter()
-    profile_text = resolve_profile_text(match_cfg, settings, refresh=bool(args.refresh))
+    profile_text = resolve_profile_text(match_cfg.get('profile_text_path'))
     print(f"    profile loaded chars={len(profile_text)} ({fmt_s(time.perf_counter() - t0)})")
     if len(profile_text) < 50:
-        raise ValueError("El perfil no devolvió suficiente texto. Probablemente LinkedIn bloqueó/redirect.")
+        raise ValueError("El perfil no devolvió suficiente texto.")
 
     results: List[Dict[str, Any]] = []
     errors: List[Dict[str, Any]] = []
@@ -305,13 +222,10 @@ def main():
             if source.lower().endswith(".txt") and os.path.exists(source):
                 job_text = read_text_file(source)
             else:
-                job_text = resolve_job_text(match_cfg, source, settings, refresh=bool(args.refresh))
+                raise ValueError(f"Solo se soportan archivos .txt locales: {source}")
             print(f"    job loaded chars={len(job_text)} ({fmt_s(time.perf_counter() - t0)})")
             if len(job_text) < 50:
-                raise ValueError("Job sin texto útil (bloqueo/login/JS)")
-
-            if hasattr(rag_utils, "is_probably_linkedin_login_wall") and rag_utils.is_probably_linkedin_login_wall(job_text):
-                raise ValueError("Job parece ser login wall/landing (texto no útil)")
+                raise ValueError("Job sin texto útil")
 
             t0 = log_step("retrieve context (profile<->job)")
             job_context = retrieve_relevant_text(

@@ -11,13 +11,8 @@ import time
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Any
 
-from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
-from langchain.chat_models import init_chat_model
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains.retrieval import create_retrieval_chain
 from langchain_core.documents import Document
 
 from chromadb.config import Settings as ChromaSettings
@@ -173,93 +168,9 @@ def get_llm(settings: RAGSettings):
             base_url=settings.ollama_base_url,
         )
 
-    raise ValueError(f"Proveedor no soportado: {provider}. Solo se soporta 'ollama'.")
-
-
-def load_url_documents(url: str) -> List[Document]:
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/122.0.0.0 Safari/537.36"
-        )
-    }
-
-    loader = WebBaseLoader(web_paths=[url], header_template=headers)
-    docs = loader.load()
-
-    if not docs:
-        raise ValueError("No se pudo cargar contenido desde la URL.")
-
-    return docs
-
-
-def clean_documents(documents: List[Document]) -> List[Document]:
-    cleaned: List[Document] = []
-    for doc in documents:
-        text = (doc.page_content or "").strip()
-        if is_probably_linkedin_login_wall(text):
-            raise ValueError(
-                "LinkedIn bloqueó el acceso y se cargó una página de login/landing en vez del contenido real. "
-                "Probá con otra URL pública no protegida o usa el pipeline de matching leyendo el texto desde archivos (inputs/*.txt)."
-            )
-        if len(text) > 50:
-            doc.page_content = text
-            cleaned.append(doc)
-
-    if not cleaned:
-        raise ValueError(
-            "Se cargó la URL, pero no se encontró suficiente contenido útil. "
-            "Puede ser una página protegida, dinámica o restringida."
-        )
-
-    return cleaned
-
-
-def is_probably_linkedin_login_wall(text: str) -> bool:
-    lower = (text or "").lower()
-    return (
-        "new to linkedin" in lower
-        or "join now" in lower
-        or "sign in" in lower
-        or "forgot password" in lower
-        or "by clicking continue to join" in lower
-        or "user agreement" in lower
-        or "guest control" in lower
-        or "cookie policy" in lower
-        or "privacy policy" in lower
+    raise ValueError(
+        f"Proveedor no soportado: {provider}. Solo se soporta 'ollama'."
     )
-
-
-def validate_not_login_wall(docs: List[Document]) -> None:
-    for doc in docs:
-        if is_probably_linkedin_login_wall(doc.page_content or ""):
-            raise ValueError(
-                "Los artifacts contienen una página de login/landing (LinkedIn bloqueado). "
-                "Borrá ./rag_artifacts/url/documents.json y ./rag_artifacts/url/chunks.json y reintentá con una URL pública."
-            )
-
-
-def cleanup_url_artifacts(settings: RAGSettings, name: str = "url", clean_db: bool = False) -> None:
-    paths = artifacts_paths(settings, name=name)
-    for key in ("docs", "chunks"):
-        p = paths.get(key)
-        if p and os.path.exists(p):
-            try:
-                os.remove(p)
-            except Exception:
-                pass
-
-    if clean_db and settings.persist_directory and os.path.exists(settings.persist_directory):
-        try:
-            shutil.rmtree(settings.persist_directory)
-        except Exception:
-            pass
-
-
-def fetch_and_clean(url: str) -> List[Document]:
-    docs = load_url_documents(url)
-    return clean_documents(docs)
 
 
 def split_documents(documents: List[Document], settings: RAGSettings) -> List[Document]:
@@ -271,15 +182,9 @@ def split_documents(documents: List[Document], settings: RAGSettings) -> List[Do
     return splitter.split_documents(documents)
 
 
-def chunk_documents(docs: List[Document], settings: RAGSettings) -> List[Document]:
-    return split_documents(docs, settings)
-
-
 def build_vectorstore(chunks: List[Document], settings: RAGSettings):
     if settings.reset_db and os.path.exists(settings.persist_directory):
         shutil.rmtree(settings.persist_directory)
-
-    validate_not_login_wall(chunks)
 
     chroma_settings = ChromaSettings(anonymized_telemetry=False)
 
@@ -335,112 +240,3 @@ def load_vectorstore(settings: RAGSettings):
         collection_name=settings.collection_name,
         client_settings=chroma_settings,
     )
-
-
-def create_rag_chain(vectorstore, settings: RAGSettings):
-    retriever = vectorstore.as_retriever(
-        search_type="similarity", search_kwargs={"k": settings.top_k}
-    )
-
-    llm = get_llm(settings)
-
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            (
-                "system",
-                (
-                    "Eres un asistente experto. "
-                    "Responde solo usando el contexto recuperado. "
-                    "Si el contexto no contiene la respuesta, dilo explícitamente. "
-                    "Responde en español de forma clara y profesional.\n\n"
-                    "Contexto:\n{context}"
-                ),
-            ),
-            ("human", "{input}"),
-        ]
-    )
-
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-    return rag_chain
-
-
-def format_sources(context_docs: List[Document]) -> str:
-    if not context_docs:
-        return "No se recuperaron fuentes."
-
-    lines = []
-    for i, doc in enumerate(context_docs, start=1):
-        metadata = doc.metadata or {}
-        source = metadata.get("source", "desconocido")
-        title = metadata.get("title", "sin_titulo")
-        snippet = doc.page_content[:300].replace("\n", " ").strip()
-        lines.append(f"[{i}] title={title} | source={source}\n    snippet={snippet}...")
-    return "\n".join(lines)
-
-
-def index_url(url: str, settings: RAGSettings) -> None:
-    paths = artifacts_paths(settings, name="url")
-
-    if os.path.exists(paths["chunks"]):
-        print(f"\n[1/1] Usando chunks existentes: {paths['chunks']}")
-        chunks = load_documents(paths["chunks"])
-        validate_not_login_wall(chunks)
-    else:
-        print(f"\n[1/3] Cargando URL: {url}")
-        docs = fetch_and_clean(url)
-        print(f"    Documentos cargados: {len(docs)}")
-
-        print("\n[2/3] Generando chunks...")
-        chunks = chunk_documents(docs, settings)
-        print(f"    Chunks generados: {len(chunks)}")
-
-    print("\n[3/3] Construyendo base vectorial...")
-    index_chunks(chunks, settings)
-    print(f"    Base vectorial creada en: {settings.persist_directory}")
-
-
-def ask_question(question: str, settings: RAGSettings) -> None:
-    print("\n[Cargando base vectorial...]")
-    vectorstore = load_vectorstore(settings)
-
-    print("[Construyendo cadena RAG...]")
-    rag_chain = create_rag_chain(vectorstore, settings)
-
-    print("\n[Consultando modelo...]")
-    response = rag_chain.invoke({"input": question})
-
-    answer = response.get("answer", "No hubo respuesta.")
-    context_docs = response.get("context", [])
-
-    print("\n================ RESPUESTA ================\n")
-    print(answer)
-
-    print("\n================ FUENTES ================\n")
-    print(format_sources(context_docs))
-
-
-def interactive_mode(settings: RAGSettings) -> None:
-    vectorstore = load_vectorstore(settings)
-    rag_chain = create_rag_chain(vectorstore, settings)
-
-    print("\nModo interactivo. Escribe 'salir' para terminar.\n")
-
-    while True:
-        question = input("Pregunta > ").strip()
-
-        if question.lower() in {"salir", "exit", "quit"}:
-            break
-
-        if not question:
-            continue
-
-        response = rag_chain.invoke({"input": question})
-        answer = response.get("answer", "No hubo respuesta.")
-        context_docs = response.get("context", [])
-
-        print("\n--- Respuesta ---\n")
-        print(answer)
-        print("\n--- Fuentes ---\n")
-        print(format_sources(context_docs))
-        print("\n" + "=" * 60 + "\n")
