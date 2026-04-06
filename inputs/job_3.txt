@@ -1,0 +1,62 @@
+Data Scientist
+Veltis Latam  Santiago, Santiago Metropolitan Region, Chile
+2 months ago  79 applicants
+  
+See who Veltis Latam has hired for this role
+
+Apply 
+
+
+
+
+Save
+
+¡En Veltis Latam buscamos un/a Data Scientist!
+
+En Veltis Latam, empresa líder en servicios para la industria minera y en constante evolución digital, buscamos incorporar a nuestro/a próximo/a Data Scientist, un rol clave para impulsar proyectos de inteligencia artificial, analítica avanzada y soluciones basadas en datos que apoyen la toma de decisiones estratégicas del negocio.
+
+📍 Ubicación Santiago (con presencia en terreno según necesidad)
+
+🎯 Tu propósito
+
+El objetivo del cargo es diseñar, entrenar e implementar modelos de Machine Learning e Inteligencia Artificial en entornos cloud, especialmente AWS, contribuyendo a la optimización de procesos, generación de insights de negocio y desarrollo de soluciones basadas en modelos de lenguaje e IA generativa.
+
+🧾 Responsabilidades clave
+
+Diseñar y entrenar modelos de ML/AI utilizando AWS SageMaker, incluyendo preparación de datos y optimización de modelos.
+Implementar soluciones de IA generativa con AWS Bedrock e integración de LLMs en aplicaciones empresariales.
+Automatizar pipelines de datos y modelos (ETL, feature engineering, entrenamiento y despliegue).
+Evaluar desempeño de modelos asegurando calidad, robustez y escalabilidad.
+Colaborar con equipos de negocio y tecnología para traducir necesidades estratégicas en soluciones de datos.
+Gestionar infraestructura en AWS asegurando eficiencia de costos, seguridad y escalabilidad.
+Documentar y comunicar resultados de forma clara a stakeholders técnicos y no técnicos.
+
+
+Requisitos
+
+
+👩‍💼 Perfil requerido
+
+Formación en Ingeniería Informática o carrera afín.
+Al menos 3 años de experiencia en desarrollo de soluciones de datos, ML o AI en entornos AWS.
+Experiencia con contenedores y orquestadores (Docker, Kubernetes).
+Conocimientos en CI/CD y herramientas como GitHub Actions, Jenkins o GitLab CI.
+Familiaridad con infraestructura como código (Terraform, CloudFormation o ARM Templates).
+Español nativo e inglés intermedio/avanzado.
+
+Beneficios
+
+🌱 ¿Qué te ofrecemos?
+
+Ser parte de una compañía en constante evolución, con foco en la excelencia, la innovación y el desarrollo de sus personas.
+Posibilidades reales de crecimiento y aprendizaje.
+Beneficios corporativos
+Seguro complementario de vida, salud y dental
+Convenios con gimnasios y establecimientos de salud
+Acceso a beneficios y descuentos a través de nuestra Caja de Compensación
+Día libre por cumpleaños 🎉
+Nosotros
+
+Veltis Latam y sus compañías operativas Berliam, Steel y Walvis son líderes en la entrega de servicios y soluciones para la minería y las industrias relevantes del país. Con presencia en los principales yacimientos y más de 3,500 trabajadores, cuentan con más de 500 equipos operativos.
+
+Nuestra empresa opera bajo los más altos estándares de Seguridad, Integridad, Colaboración, Innovación y Excelencia, posicionándonos como parte esencial de la cadena de valor de nuestros clientes. Desarrollamos relaciones a largo plazo, ayudándolos a alcanzar sus resultados de negocio mediante la optimización del rendimiento sustentable, la integridad y eficiencia de sus activos.

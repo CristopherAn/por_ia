@@ -1,0 +1,116 @@
+{
+  "profile_url": "https://cl.linkedin.com/in/cristopher-bustos-a63a5233/",
+  "jobs_count": 6,
+  "results": [
+    {
+      "job_url": "./inputs/job_1.txt",
+      "fit_score": 90,
+      "seniority_guess": "senior|lead|unknown",
+      "pros": [
+        "Experiencia en analítica avanzada y Big Data",
+        "Conocimientos en machine learning y arquitectura de soluciones",
+        "Habilidad para liderar procesos end-to-end y gestionar equipos",
+        "Experto en implementación de modelos productivos a gran escala"
+      ],
+      "gaps": [
+        "No se menciona experiencia directa en Fintech o banca",
+        "No se indica habilidad específica en SQL",
+        "No se mencionan conocimientos en métricas de uso, performance y valor"
+      ],
+      "missing_keywords": [
+        "Fintech",
+        "banca",
+        "SQL"
+      ],
+      "recommended_cv_bullets": [
+        "Análisis y priorización de iniciativas digitales para la banca empresas",
+        "Levantar requerimientos junto a stakeholders del negocio",
+        "Traducir necesidades comerciales en definiciones funcionales"
+      ],
+      "final_recommendation": "apply"
+    },
+    {
+      "job_url": "./inputs/job_2.txt",
+      "fit_score": 80,
+      "seniority_guess": "lead",
+      "pros": [
+        "experiencia en analítica avanzada y machine learning",
+        "dominio de arquitectura Lakehouse basada en Delta Lake",
+        "habilidades en DevOps y producción con Azure DevOps",
+        "experiencia en liderazgo de equipos multidisciplinarios"
+      ],
+      "gaps": [
+        "falta experiencia directa en análisis de recorrido de clientes",
+        "no se menciona experiencia específica en A/B testing"
+      ],
+      "missing_keywords": [],
+      "recommended_cv_bullets": [
+        "Análisis de recorrido de clientes y identificación de oportunidades de mejora en conversión, retención y ventas",
+        "Implementación de A/B testing para optimizar resultados"
+      ],
+      "final_recommendation": "apply"
+    },
+    {
+      "job_url": "./inputs/job_3.txt",
+      "fit_score": 80,
+      "seniority_guess": "lead|unknown",
+      "pros": [
+        "Experiencia liderando procesos end-to-end en entornos enterprise",
+        "Herramientas de Machine Learning y Big Data como Azure Databricks, Azure Event Hub, etc.",
+        "Arquitectura Lakehouse basada en Delta Lake",
+        "Conocimientos en DevOps y Producción con CI/CD en Azure DevOps"
+      ],
+      "gaps": [
+        "Falta de información sobre la empresa Veltis Latam",
+        "No se menciona si el candidato tiene experiencia con LLMs (Modelos de Lenguaje Generativo)"
+      ],
+      "missing_keywords": [
+        "LLMs",
+        "conocimientos en seguridad"
+      ],
+      "recommended_cv_bullets": [
+        "Diseñé e implementé múltiples modelos predictivos de churn para distintos productos y segmentos",
+        "Colaboré con equipos de negocio y tecnología para traducir necesidades estratégicas en soluciones de datos",
+        "Gestioné infraestructura en Azure asegurando eficiencia de costos, seguridad y escalabilidad"
+      ],
+      "final_recommendation": "apply|maybe|no"
+    },
+    {
+      "job_url": "./inputs/job_5.txt",
+      "fit_score": 90,
+      "seniority_guess": "lead",
+      "pros": [
+        "Experiencia de liderazgo de equipos multidisciplinarios en proyectos de análisis y modelado de datos",
+        "Dominio avanzado de tecnologías de data science, incluyendo Python, SQL y herramientas de control de versiones",
+        "Habilidades sólidas en estadística y econometría, con experiencia en procesamiento de datos y construcción de modelos"
+      ],
+      "gaps": [
+        "Falta de información sobre el contexto específico del trabajo en Cordada",
+        "No se menciona la experiencia específica en modelado de riesgos de crédito o análisis de negocio"
+      ],
+      "missing_keywords": [
+        "contexto del trabajo",
+        "experiencia específica en riesgos de crédito"
+      ],
+      "recommended_cv_bullets": [
+        "- Lideré un equipo multidisciplinario para desarrollar y implementar modelos de machine learning",
+        "- Diseñaré e implementar múltiples modelos predictivos para distintos productos y segmentos",
+        "- Colaboraré con áreas de negocio, tecnología y producto para capturar requerimientos y priorizar iniciativas"
+      ],
+      "final_recommendation": "apply"
+    }
+  ],
+  "errors": [
+    {
+      "job_url": "./inputs/job_4.txt",
+      "error": "ValueError: Job parece ser login wall/landing (texto no útil)"
+    },
+    {
+      "job_url": "./inputs/job_6.txt",
+      "error": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+    }
+  ],
+  "provider": "ollama",
+  "ollama_base_url": "http://host.docker.internal:11434",
+  "ollama_chat_model": "llama3.2:3b-instruct-fp16"
+}

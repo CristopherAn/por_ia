@@ -1,0 +1,31 @@
+
+CURRICULUM VITAE
+
+Nombre Completo: 		Cristopher Antonio Bustos Reyes
+Fecha de Nacimiento: 		3 de noviembre de 1981
+Edad: 				44 años
+Teléfono: 			+569 983671861
+Correo Electrónico: 		cristopheranbus@gmail.com
+Nacionalidad: 			chileno
+
+EDUCACIÓN
+Ingeniero Civil Matemático – Universidad de Concepción (2003 – 2012), especialidad en Estadística.
+
+PERFIL PROFESIONAL
+Más de 13 años de experiencia en analítica avanzada, machine learning y arquitectura de soluciones Big Data en entornos enterprise. He evolucionado desde la modelación matemática y estadística hacia el diseño, construcción y operación de ecosistemas analíticos completos en la nube, integrando procesamiento batch y streaming sobre arquitecturas Lakehouse en Azure.
+Cuento con experiencia liderando procesos end-to-end: desde el levantamiento de requerimientos con stakeholders y la traducción de problemáticas de negocio en soluciones analíticas, hasta el desarrollo, validación, despliegue y monitoreo de modelos en producción. Especialista en la implementación de modelos productivos a gran escala, con impacto transversal en planificación, operación, calidad de red y marketing.
+
+STACK TECNOLÓGICO Y ARQUITECTURA ANALÍTICA
+•	Infraestructura Cloud: Microsoft Azure, Azure Databricks, Azure Event Hub, Azure DevOps. Arquitectura Lakehouse basada en Delta Lake.
+•	Machine Learning: scikit-learn, XGBoost, TensorFlow. Modelos de clasificación, regresión y detección de anomalías. Feature engineering avanzado, hyperparameter tuning, validación cruzada y monitoreo básico de performance en producción.
+•	DevOps y Producción: CI/CD en Azure DevOps, versionamiento de código y modelos, automatización de despliegues y separación de ambientes (dev/lab /prod).
+
+EXPERIENCIA PROFESIONAL
+Lead Data Scientist – Telefónica Chile | Ene 2018 – Mar 2026
+Lideré un equipo multidisciplinario compuesto por Data Scientist, Arquitecto de Datos, Especialista en Metadata, Especialista en Calidad del Dato y Business Analyst. Diseñé e implementé múltiples modelos predictivos de churn para distintos productos y segmentos, modelos de riesgo operativo y sistemas de detección de fallas masivas. Construí soluciones analíticas productivas sobre Azure Databricks integradas con pipelines CI/CD, procesando telemetría masiva en tiempo real. Impacté transversalmente áreas estratégicas mediante soluciones robustas y escalables.
+Data Scientist – Telefónica Chile | Dic 2015 – Ene 2018
+Reduje el churn en distintos servicios mediante modelos predictivos de machine learning en entornos Big Data, apoyando estrategias de retención focalizadas. Diseñé métricas de riesgo e inversión para resguardar retornos esperados y optimizar la asignación de recursos, maximizando eficiencia operativa y comercial. Lideré proyectos de reportería ejecutiva para apoyar la toma de decisiones estratégicas.
+Business Analytics – Cityplanning | Dic 2012 – Dic 2015
+Participé en el desarrollo de soluciones analíticas para apoyar la toma de decisiones estratégicas y la planificación del negocio en distintos sectores. Diseñé metodologías cuantitativas, KPIs y modelos predictivos (machine learning, clustering y optimización) para resolver problemáticas complejas y mejorar la asignación de recursos. Asesoré a alta gerencia mediante informes ejecutivos orientados a la evaluación de escenarios y la generación de impacto financiero.
+Analista/Memorista – Nuevosur | Ene 2012 – Dic 2012
+Desarrollé un modelo predictivo para estimar la vida útil de medidores de agua potable, optimizando la planificación de recambios y la asignación de recursos. Diseñé una metodología analítica orientada a reducir el volumen de agua no facturada, contribuyendo directamente a la mejora de los ingresos de la compañía. Apliqué técnicas de machine learning —incluyendo árboles de decisión y redes neuronales— junto con análisis estadístico sobre datos operacionales históricos para identificar patrones de deterioro y comportamiento.
