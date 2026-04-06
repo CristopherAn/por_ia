@@ -27,6 +27,12 @@ flowchart TD
     G --> J[Output<br/>Reporte Ejecutivo<br/>con recomendaciones]
 ```
 
+## Archivos Clave para Prompts y Configuración
+
+- **`config/rag_config.json`**: Contiene el `prompt_template` principal para el matching de empleos (evalúa fit_score, pros, gaps, etc.).
+- **`match_linkedin_jobs.py`**: Script que ejecuta el matching usando el prompt_template de la config.
+- **`run_rag_pipeline.py`**: Permite preguntas ad-hoc con `--question` o modo chat con `--chat` (requiere adaptación para archivos locales).
+
 ## Requisitos
 
 - Python 3.10+ (recomendado)
