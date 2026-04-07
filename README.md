@@ -1,33 +1,48 @@
 # RAG Matching de Empleos con Ollama
 
-Este proyecto compara un perfil profesional en texto contra varias descripciones de empleo en `.txt` usando embeddings con Ollama, almacenamiento en ChromaDB y evaluacion final con un LLM local.
+Este proyecto toma un perfil en texto y varias descripciones de empleo (`.txt`) para:
 
-El flujo actual del repo es local y basado en archivos. No usa scraping de URLs ni scripts de LinkedIn.
+1. Indexar jobs en ChromaDB.
+2. Evaluar compatibilidad perfil vs jobs.
+3. Generar un CV nuevo consolidado para esos requisitos.
 
-## Flujo real
+Todo corre en local con Ollama.
 
-1. `index_jobs.py` carga `inputs/job_*.txt`, los divide en chunks y los guarda en ChromaDB.
-2. `match_jobs.py` carga `inputs/profile.txt`, recupera desde Chroma los fragmentos mas relevantes de cada job y genera una evaluacion final en JSON.
-3. `generate_cv.py` crea un CV nuevo en Markdown considerando todos los jobs y el reporte de matching.
-4. Las salidas quedan en `outputs/job_match_report.json`, `outputs/tailored_cv.json` y `outputs/tailored_cv.md`.
+## Arquitectura
 
-## Archivos clave
+```mermaid
+flowchart TD
+    A[Usuario] --> B[config/rag_config.json]
+    B --> C[index_jobs.py]
+    C --> D[(ChromaDB)]
+    B --> E[match_jobs.py]
+    E --> D
+    E --> F[outputs/job_match_report.json]
+    B --> G[generate_cv.py]
+    G --> F
+    G --> H[inputs/profile.txt + inputs/job_*.txt]
+    G --> I[outputs/tailored_cv.json]
+    G --> J[outputs/tailored_cv.md]
+    K[Ollama<br/>llama3.2 + nomic-embed-text] --> C
+    K --> E
+    K --> G
+```
 
-- `config/rag_config.json`: configuracion principal
-- `index_jobs.py`: indexacion de jobs en ChromaDB
-- `match_jobs.py`: matching perfil vs jobs
-- `generate_cv.py`: generacion de CV consolidado
-- `rag_utils.py`: utilidades de embeddings, Chroma y chunking
-- `inputs/profile.txt`: perfil del candidato
-- `inputs/job_*.txt`: descripciones de trabajo
+## Flujo
+
+1. `index_jobs.py` lee `inputs/job_*.txt`, divide en chunks y los indexa en Chroma.
+2. `match_jobs.py` usa el perfil (`inputs/profile.txt`) y genera `outputs/job_match_report.json`.
+3. `generate_cv.py` usa perfil + jobs + reporte de matching para crear:
+- `outputs/tailored_cv.json`
+- `outputs/tailored_cv.md`
 
 ## Requisitos
 
 - Python 3.10+
 - Ollama corriendo localmente
-- Modelos disponibles en Ollama:
-  - chat: `llama3.2:3b-instruct-fp16`
-  - embeddings: `nomic-embed-text`
+- Modelos:
+- `llama3.2:3b-instruct-fp16` (chat)
+- `nomic-embed-text` (embeddings)
 
 Instalacion:
 
@@ -37,7 +52,18 @@ pip install -r requirements.txt
 
 ## Configuracion
 
-Archivo: `config/rag_config.json`
+Archivo principal: `config/rag_config.json`
+
+Campos importantes:
+
+- `rag.persist_directory`: ruta de base vectorial
+- `match.profile_text_path`: perfil
+- `match.job_text_glob`: jobs
+- `match.output_path`: reporte de matching
+- `cv.output_json_path`: salida estructurada de CV
+- `cv.output_markdown_path`: CV final en Markdown
+
+Ejemplo minimo:
 
 ```json
 {
@@ -45,14 +71,11 @@ Archivo: `config/rag_config.json`
     "provider": "ollama",
     "persist_directory": "./chroma_url_db",
     "collection_name": "url_docs",
-    "artifacts_dir": "./rag_artifacts",
     "ollama_base_url": "http://localhost:11434",
     "ollama_chat_model": "llama3.2:3b-instruct-fp16",
     "ollama_embedding_model": "nomic-embed-text",
     "chunk_size": 1000,
-    "chunk_overlap": 200,
-    "top_k": 4,
-    "reset_db": false
+    "chunk_overlap": 200
   },
   "match": {
     "profile_text_path": "./inputs/profile.txt",
@@ -67,110 +90,37 @@ Archivo: `config/rag_config.json`
 }
 ```
 
-Variables de entorno utiles:
-
-- `RAG_PROVIDER`
-- `RAG_PERSIST_DIRECTORY`
-- `RAG_ARTIFACTS_DIR`
-- `RAG_OLLAMA_BASE_URL`
-- `RAG_OLLAMA_CHAT_MODEL`
-- `RAG_OLLAMA_EMBEDDING_MODEL`
-- `RAG_CHUNK_SIZE`
-- `RAG_CHUNK_OVERLAP`
-- `RAG_TOP_K`
-
 ## Uso
-
-Indexar jobs:
 
 ```bash
 python index_jobs.py --config config/rag_config.json
-```
-
-Cada corrida reemplaza la base anterior en `chroma_url_db`.
-
-Generar reporte:
-
-```bash
 python match_jobs.py --config config/rag_config.json
-```
-
-`match_jobs.py` espera que la base ya exista. Si no indexaste antes, primero corre `index_jobs.py`.
-
-Generar CV consolidado:
-
-```bash
 python generate_cv.py --config config/rag_config.json
 ```
 
-## Salida
-
-Archivo: `outputs/job_match_report.json`
-
-Ejemplo de resultado por job:
-
-```json
-{
-  "job_source": "./inputs/job_1.txt",
-  "fit_score": 78,
-  "seniority_guess": "senior",
-  "pros": ["Experiencia fuerte en Python"],
-  "gaps": ["Falta experiencia en Kubernetes"],
-  "missing_keywords": ["Docker", "CI/CD"],
-  "recommended_cv_bullets": ["Agregar proyecto con despliegues en produccion"],
-  "final_recommendation": "apply"
-}
-```
-
-Archivos de CV:
-
-- `outputs/tailored_cv.json`: resumen estructurado de requisitos y cobertura
-- `outputs/tailored_cv.md`: CV final en Markdown
-
 ## Docker
-
-El contenedor esta preparado para usar Ollama del host en Windows mediante `http://host.docker.internal:11434`.
-
-Construir:
 
 ```bash
 docker compose build
-```
-
-Indexar:
-
-```bash
 docker compose run --rm rag python index_jobs.py --config config/rag_config.json
-```
-
-Generar reporte:
-
-```bash
 docker compose run --rm rag python match_jobs.py --config config/rag_config.json
-```
-
-Generar CV:
-
-```bash
 docker compose run --rm rag python generate_cv.py --config config/rag_config.json
 ```
 
 ## Troubleshooting
 
-### Error: `Failed to connect to Ollama`
+### `Failed to connect to Ollama`
 
-En host local usa `http://localhost:11434`.
+- Host local: `http://localhost:11434`
+- Docker: `http://host.docker.internal:11434`
 
-En Docker usa `http://host.docker.internal:11434`.
+### `PermissionError` o `disk I/O error` al indexar
 
-### Error: `No existe la base vectorial`
+`index_jobs.py` intenta resetear la base y, si falla por locks de Windows/OneDrive, usa una ruta fallback en `%TEMP%`.
 
-Primero ejecuta:
+Si aparece warning de fallback, usa esa misma ruta para matching/CV actualizando `rag.persist_directory`.
 
-```bash
-python index_jobs.py --config config/rag_config.json
-```
+### El modelo devuelve formato invalido
 
-### Error: salida JSON invalida del modelo
-
-`match_jobs.py` intenta extraer el JSON y, si el modelo responde con formato defectuoso, hace un segundo intento de reparacion. Aun asi, conviene mantener `prompt_template` bien estricto.
+- `match_jobs.py` repara JSON automaticamente.
+- `generate_cv.py` usa salida etiquetada y fallback para no perder `tailored_cv.md` aunque el formato llegue imperfecto.

@@ -1,8 +1,8 @@
 import argparse
 import json
 import os
+import re
 import time
-from json import JSONDecodeError
 from typing import Any, Dict, List
 
 import rag_utils
@@ -26,22 +26,33 @@ JOBS (todos):
 REPORTE MATCHING:
 {match_report}
 
-Devuelve EXCLUSIVAMENTE un JSON valido con esta estructura exacta (sin markdown alrededor):
-{{
-  "target_role_summary": "...",
-  "core_requirements": ["..."],
-  "coverage_notes": ["..."],
-  "ats_keywords": ["..."],
-  "cv_markdown": "..."
-}}
+Devuelve EXCLUSIVAMENTE este formato con etiquetas (sin texto adicional):
+<TARGET_ROLE_SUMMARY>
+...
+</TARGET_ROLE_SUMMARY>
+<CORE_REQUIREMENTS>
+- ...
+- ...
+</CORE_REQUIREMENTS>
+<COVERAGE_NOTES>
+- ...
+- ...
+</COVERAGE_NOTES>
+<ATS_KEYWORDS>
+- ...
+- ...
+</ATS_KEYWORDS>
+<CV_MARKDOWN>
+...
+</CV_MARKDOWN>
 
-Reglas:
+Reglas obligatorias:
 - No inventes experiencia ni certificaciones.
 - Usa solo informacion del perfil para la experiencia.
-- `core_requirements` debe consolidar los requisitos repetidos de todos los jobs.
-- `coverage_notes` debe indicar cobertura o brecha principal por requisito.
-- `ats_keywords` debe incluir terminos tecnicos relevantes para ATS.
-- `cv_markdown` debe incluir secciones:
+- CORE_REQUIREMENTS debe consolidar los requisitos repetidos de todos los jobs.
+- COVERAGE_NOTES debe indicar cobertura o brecha principal por requisito.
+- ATS_KEYWORDS debe incluir terminos tecnicos relevantes para ATS.
+- CV_MARKDOWN debe incluir secciones:
   - Titulo profesional
   - Resumen
   - Habilidades clave
@@ -85,7 +96,7 @@ def resolve_job_list(job_text_glob: str) -> List[Dict[str, str]]:
     raise ValueError("Falta un glob valido para jobs (ej: ./inputs/job_*.txt)")
 
 
-def strip_json_fences(content: str) -> str:
+def strip_text_fences(content: str) -> str:
     content = content.strip()
     if content.startswith("```"):
         lines = content.splitlines()
@@ -97,37 +108,96 @@ def strip_json_fences(content: str) -> str:
     return content
 
 
-def parse_json_response(content: str) -> Dict[str, Any]:
-    content = strip_json_fences(content)
-    decoder = json.JSONDecoder()
+def parse_tagged_response(content: str) -> Dict[str, str]:
+    content = strip_text_fences(content)
 
-    candidates = [content]
-    if "{" in content:
-        candidates.append(content[content.find("{") :])
+    def extract(tag: str) -> str:
+        pattern = rf"<{tag}>\s*(.*?)\s*</{tag}>"
+        match = re.search(pattern, content, flags=re.DOTALL | re.IGNORECASE)
+        if not match:
+            raise ValueError(f"No se encontro la etiqueta <{tag}> en la respuesta del modelo.")
+        return match.group(1).strip()
 
-    for candidate in candidates:
-        candidate = candidate.strip()
-        if not candidate:
-            continue
-        try:
-            data, _ = decoder.raw_decode(candidate)
-        except JSONDecodeError:
-            continue
-        if isinstance(data, dict):
-            return data
-
-    start = content.find("{")
-    end = content.rfind("}")
-    if start != -1 and end != -1 and end > start:
-        return json.loads(content[start : end + 1])
-
-    raise JSONDecodeError("No se encontro un objeto JSON valido en la respuesta del modelo", content, 0)
+    return {
+        "target_role_summary": extract("TARGET_ROLE_SUMMARY"),
+        "core_requirements": extract("CORE_REQUIREMENTS"),
+        "coverage_notes": extract("COVERAGE_NOTES"),
+        "ats_keywords": extract("ATS_KEYWORDS"),
+        "cv_markdown": extract("CV_MARKDOWN"),
+    }
 
 
-def repair_json_with_llm(llm, raw_content: str) -> Dict[str, Any]:
+def extract_optional_tag(content: str, tag: str) -> str:
+    pattern = rf"<{tag}>\s*(.*?)\s*</{tag}>"
+    match = re.search(pattern, content, flags=re.DOTALL | re.IGNORECASE)
+    if not match:
+        return ""
+    return match.group(1).strip()
+
+
+def build_fallback_payload_from_text(content: str) -> Dict[str, Any]:
+    cleaned = strip_text_fences(content)
+
+    target_role_summary = extract_optional_tag(cleaned, "TARGET_ROLE_SUMMARY")
+    core_requirements = extract_optional_tag(cleaned, "CORE_REQUIREMENTS")
+    coverage_notes = extract_optional_tag(cleaned, "COVERAGE_NOTES")
+    ats_keywords = extract_optional_tag(cleaned, "ATS_KEYWORDS")
+    cv_markdown = extract_optional_tag(cleaned, "CV_MARKDOWN")
+
+    if not cv_markdown:
+        cv_markdown = cleaned
+        cv_markdown = re.sub(
+            r"<TARGET_ROLE_SUMMARY>.*?</TARGET_ROLE_SUMMARY>",
+            "",
+            cv_markdown,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        cv_markdown = re.sub(
+            r"<CORE_REQUIREMENTS>.*?</CORE_REQUIREMENTS>",
+            "",
+            cv_markdown,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        cv_markdown = re.sub(
+            r"<COVERAGE_NOTES>.*?</COVERAGE_NOTES>",
+            "",
+            cv_markdown,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        cv_markdown = re.sub(
+            r"<ATS_KEYWORDS>.*?</ATS_KEYWORDS>",
+            "",
+            cv_markdown,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        cv_markdown = re.sub(r"</?[A-Z_]+>", "", cv_markdown, flags=re.IGNORECASE).strip()
+
+    if not cv_markdown:
+        cv_markdown = (
+            "# Titulo profesional\n"
+            "Perfil orientado a roles analiticos y de datos.\n\n"
+            "## Resumen\n"
+            "Se requiere revisar manualmente el contenido generado por el modelo.\n"
+        )
+
+    return {
+        "target_role_summary": target_role_summary or "Resumen generado con formato parcial del modelo.",
+        "core_requirements": core_requirements,
+        "coverage_notes": coverage_notes or "No se pudo parsear completamente la salida del modelo.",
+        "ats_keywords": ats_keywords,
+        "cv_markdown": cv_markdown,
+    }
+
+
+def repair_tagged_with_llm(llm, raw_content: str) -> Dict[str, str]:
     repair_prompt = (
-        "Convierte la siguiente salida en JSON valido. "
-        "Responde solo con un objeto JSON, sin markdown ni explicaciones.\n\n"
+        "Reescribe la siguiente salida respetando SOLO estas etiquetas:\n"
+        "<TARGET_ROLE_SUMMARY>...</TARGET_ROLE_SUMMARY>\n"
+        "<CORE_REQUIREMENTS>...</CORE_REQUIREMENTS>\n"
+        "<COVERAGE_NOTES>...</COVERAGE_NOTES>\n"
+        "<ATS_KEYWORDS>...</ATS_KEYWORDS>\n"
+        "<CV_MARKDOWN>...</CV_MARKDOWN>\n\n"
+        "No agregues texto fuera de etiquetas.\n\n"
         "Salida original:\n"
         f"{raw_content}"
     )
@@ -135,15 +205,28 @@ def repair_json_with_llm(llm, raw_content: str) -> Dict[str, Any]:
     repaired_content = getattr(repaired, "content", repaired)
     if not isinstance(repaired_content, str):
         repaired_content = str(repaired_content)
-    return parse_json_response(repaired_content)
+    return parse_tagged_response(repaired_content)
 
 
-def as_list(value: Any) -> List[str]:
-    if isinstance(value, list):
-        return [str(item).strip() for item in value if str(item).strip()]
+def parse_list_block(value: Any) -> List[str]:
     if value in (None, ""):
         return []
-    return [str(value).strip()]
+
+    text = str(value).strip()
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    parsed: List[str] = []
+    for line in lines:
+        cleaned = line
+        if cleaned.startswith("- "):
+            cleaned = cleaned[2:].strip()
+        elif cleaned.startswith("* "):
+            cleaned = cleaned[2:].strip()
+        parsed.append(cleaned)
+
+    if parsed:
+        return [item for item in parsed if item]
+
+    return [part.strip() for part in text.split(",") if part.strip()]
 
 
 def normalize_cv_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -153,13 +236,13 @@ def normalize_cv_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     cv_markdown = str(payload.get("cv_markdown", "")).strip()
     if not cv_markdown:
-        raise ValueError("El modelo no devolvio cv_markdown.")
+        raise ValueError("El modelo no devolvio CV_MARKDOWN.")
 
     return {
         "target_role_summary": target_role_summary,
-        "core_requirements": as_list(payload.get("core_requirements")),
-        "coverage_notes": as_list(payload.get("coverage_notes")),
-        "ats_keywords": as_list(payload.get("ats_keywords")),
+        "core_requirements": parse_list_block(payload.get("core_requirements")),
+        "coverage_notes": parse_list_block(payload.get("coverage_notes")),
+        "ats_keywords": parse_list_block(payload.get("ats_keywords")),
         "cv_markdown": cv_markdown,
     }
 
@@ -187,13 +270,18 @@ def invoke_cv_llm(
         content = str(content)
 
     try:
-        payload = parse_json_response(content)
-    except JSONDecodeError:
-        t1 = log_step("llm.repair_json cv")
-        payload = repair_json_with_llm(llm, content)
-        log_done(t1)
-
-    return normalize_cv_payload(payload)
+        payload = parse_tagged_response(content)
+        return normalize_cv_payload(payload)
+    except Exception:
+        t1 = log_step("llm.repair_tags cv")
+        try:
+            repaired_payload = repair_tagged_with_llm(llm, content)
+            log_done(t1)
+            return normalize_cv_payload(repaired_payload)
+        except Exception as exc:
+            log_done(t1, f"fallback ({type(exc).__name__})")
+            fallback_payload = build_fallback_payload_from_text(content)
+            return normalize_cv_payload(fallback_payload)
 
 
 def main():
