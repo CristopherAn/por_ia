@@ -8,13 +8,15 @@ El flujo actual del repo es local y basado en archivos. No usa scraping de URLs 
 
 1. `index_jobs.py` carga `inputs/job_*.txt`, los divide en chunks y los guarda en ChromaDB.
 2. `match_jobs.py` carga `inputs/profile.txt`, recupera desde Chroma los fragmentos mas relevantes de cada job y genera una evaluacion final en JSON.
-3. El reporte final se escribe en `outputs/job_match_report.json`.
+3. `generate_cv.py` crea un CV nuevo en Markdown considerando todos los jobs y el reporte de matching.
+4. Las salidas quedan en `outputs/job_match_report.json`, `outputs/tailored_cv.json` y `outputs/tailored_cv.md`.
 
 ## Archivos clave
 
 - `config/rag_config.json`: configuracion principal
 - `index_jobs.py`: indexacion de jobs en ChromaDB
 - `match_jobs.py`: matching perfil vs jobs
+- `generate_cv.py`: generacion de CV consolidado
 - `rag_utils.py`: utilidades de embeddings, Chroma y chunking
 - `inputs/profile.txt`: perfil del candidato
 - `inputs/job_*.txt`: descripciones de trabajo
@@ -57,6 +59,10 @@ Archivo: `config/rag_config.json`
     "job_text_glob": "./inputs/job_*.txt",
     "output_path": "./outputs/job_match_report.json",
     "prompt_template": "..."
+  },
+  "cv": {
+    "output_json_path": "./outputs/tailored_cv.json",
+    "output_markdown_path": "./outputs/tailored_cv.md"
   }
 }
 ```
@@ -91,6 +97,12 @@ python match_jobs.py --config config/rag_config.json
 
 `match_jobs.py` espera que la base ya exista. Si no indexaste antes, primero corre `index_jobs.py`.
 
+Generar CV consolidado:
+
+```bash
+python generate_cv.py --config config/rag_config.json
+```
+
 ## Salida
 
 Archivo: `outputs/job_match_report.json`
@@ -109,6 +121,11 @@ Ejemplo de resultado por job:
   "final_recommendation": "apply"
 }
 ```
+
+Archivos de CV:
+
+- `outputs/tailored_cv.json`: resumen estructurado de requisitos y cobertura
+- `outputs/tailored_cv.md`: CV final en Markdown
 
 ## Docker
 
@@ -130,6 +147,12 @@ Generar reporte:
 
 ```bash
 docker compose run --rm rag python match_jobs.py --config config/rag_config.json
+```
+
+Generar CV:
+
+```bash
+docker compose run --rm rag python generate_cv.py --config config/rag_config.json
 ```
 
 ## Troubleshooting

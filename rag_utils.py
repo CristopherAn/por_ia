@@ -1,15 +1,21 @@
 import os
+import logging
 
 # Disable Chroma/Chromadb anonymized telemetry to avoid noisy console warnings and
 # prevent client telemetry codepaths from running inside some Docker environments.
 os.environ.setdefault("ANONYMIZED_TELEMETRY", "False")
 os.environ.setdefault("CHROMA_ANONYMIZED_TELEMETRY", "False")
 os.environ.setdefault("POSTHOG_DISABLED", "1")
+# Some chromadb/posthog version combinations still log telemetry errors even when
+# telemetry is disabled. Silence only that logger to keep CLI output clean.
+logging.getLogger("chromadb.telemetry.product.posthog").setLevel(logging.CRITICAL)
 import shutil
 import json
 import time
+import stat
+import tempfile
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
@@ -182,23 +188,54 @@ def split_documents(documents: List[Document], settings: RAGSettings) -> List[Do
     return splitter.split_documents(documents)
 
 
-def build_vectorstore(chunks: List[Document], settings: RAGSettings):
-    if settings.reset_db and os.path.exists(settings.persist_directory):
-        shutil.rmtree(settings.persist_directory)
+def _on_rm_error(func, path, exc_info):
+    # Handles read-only files on Windows and retries once.
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except Exception:
+        pass
 
-    chroma_settings = ChromaSettings(anonymized_telemetry=False)
 
-    t0 = time.perf_counter()
-    print(
-        f"    [EMBEDDINGS] provider={settings.provider} "
-        f"model={(settings.ollama_embedding_model if settings.provider.lower() == 'ollama' else settings.embedding_model)}"
-    )
-    embeddings = get_embeddings(settings)
-    print(f"    [EMBEDDINGS] init ok ({time.perf_counter() - t0:.2f}s)")
+def try_reset_persist_directory(persist_directory: str, *, retries: int = 3) -> bool:
+    if not os.path.exists(persist_directory):
+        return True
 
-    if os.path.exists(settings.persist_directory):
+    for attempt in range(1, retries + 1):
+        try:
+            shutil.rmtree(persist_directory, onerror=_on_rm_error)
+            return True
+        except PermissionError as exc:
+            if attempt == retries:
+                print(
+                    "    [WARN] No se pudo resetear la base vectorial "
+                    f"({persist_directory}): {type(exc).__name__}: {exc}"
+                )
+                print(
+                    "    [WARN] Se continua sin reset. Puede haber duplicados si se indexa varias veces."
+                )
+                return False
+            time.sleep(0.5 * attempt)
+
+    return False
+
+
+def _is_disk_io_error(exc: Exception) -> bool:
+    text = str(exc).lower()
+    return "disk i/o error" in text or "operationalerror" in text
+
+
+def _index_into_directory(
+    chunks: List[Document],
+    *,
+    settings: RAGSettings,
+    embeddings,
+    chroma_settings: ChromaSettings,
+    persist_directory: str,
+):
+    if os.path.exists(persist_directory):
         vectorstore = Chroma(
-            persist_directory=settings.persist_directory,
+            persist_directory=persist_directory,
             embedding_function=embeddings,
             collection_name=settings.collection_name,
             client_settings=chroma_settings,
@@ -214,7 +251,7 @@ def build_vectorstore(chunks: List[Document], settings: RAGSettings):
     vs = Chroma.from_documents(
         documents=chunks,
         embedding=embeddings,
-        persist_directory=settings.persist_directory,
+        persist_directory=persist_directory,
         collection_name=settings.collection_name,
         client_settings=chroma_settings,
     )
@@ -222,8 +259,61 @@ def build_vectorstore(chunks: List[Document], settings: RAGSettings):
     return vs
 
 
-def index_chunks(chunks: List[Document], settings: RAGSettings) -> None:
-    build_vectorstore(chunks, settings)
+def build_vectorstore(chunks: List[Document], settings: RAGSettings) -> Tuple[object, str]:
+    persist_directory = settings.persist_directory
+    if settings.reset_db and os.path.exists(settings.persist_directory):
+        try_reset_persist_directory(settings.persist_directory)
+
+    chroma_settings = ChromaSettings(anonymized_telemetry=False)
+
+    t0 = time.perf_counter()
+    print(
+        f"    [EMBEDDINGS] provider={settings.provider} "
+        f"model={(settings.ollama_embedding_model if settings.provider.lower() == 'ollama' else settings.embedding_model)}"
+    )
+    embeddings = get_embeddings(settings)
+    print(f"    [EMBEDDINGS] init ok ({time.perf_counter() - t0:.2f}s)")
+
+    try:
+        vs = _index_into_directory(
+            chunks,
+            settings=settings,
+            embeddings=embeddings,
+            chroma_settings=chroma_settings,
+            persist_directory=persist_directory,
+        )
+        return vs, persist_directory
+    except Exception as exc:
+        if not _is_disk_io_error(exc):
+            raise
+
+        # Fallback for unstable/synced directories on Windows (e.g. OneDrive).
+        fallback_base = os.path.join(tempfile.gettempdir(), "poc_ia_chroma")
+        ensure_dir(fallback_base)
+        fallback_dir = os.path.join(
+            fallback_base,
+            f"run_{int(time.time())}",
+        )
+        ensure_dir(fallback_dir)
+        print(
+            "    [WARN] Error de disco al indexar en "
+            f"{persist_directory}: {type(exc).__name__}: {exc}"
+        )
+        print(f"    [WARN] Se usa carpeta fallback: {fallback_dir}")
+
+        vs = _index_into_directory(
+            chunks,
+            settings=settings,
+            embeddings=embeddings,
+            chroma_settings=chroma_settings,
+            persist_directory=fallback_dir,
+        )
+        return vs, fallback_dir
+
+
+def index_chunks(chunks: List[Document], settings: RAGSettings) -> str:
+    _vectorstore, persist_directory = build_vectorstore(chunks, settings)
+    return persist_directory
 
 
 def load_vectorstore(settings: RAGSettings):

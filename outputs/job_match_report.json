@@ -3,76 +3,112 @@
   "jobs_count": 4,
   "results": [
     {
-      "job_source": "inputs/job_2.txt",
-      "fit_score": 0,
-      "seniority_guess": "unknown",
-      "pros": [],
-      "gaps": [],
-      "missing_keywords": [],
-      "recommended_cv_bullets": [],
-      "final_recommendation": "maybe"
+      "job_source": "inputs/job_1.txt",
+      "fit_score": 80,
+      "seniority_guess": "lead",
+      "pros": [
+        "Experiencia de liderazgo y gestión de equipos",
+        "Conocimientos avanzados en Python, R y SQL",
+        "Habilidades de comunicación efectiva para traducir insights a lenguaje de negocio",
+        "Experiencia en análisis de datos y modelado con herramientas de machine learning"
+      ],
+      "gaps": [
+        "Falta de información sobre las metas específicas del cargo",
+        "No se menciona experiencia directa en el sector financiero"
+      ],
+      "missing_keywords": [
+        "métodos cuantitativos",
+        "KPIs"
+      ],
+      "recommended_cv_bullets": [
+        "Lideré proyectos de reportería ejecutiva para apoyar la toma de decisiones estratégicas",
+        "Desarrollé soluciones analíticas productivas sobre Azure Databricks integradas con pipelines CI/CD"
+      ],
+      "final_recommendation": "apply"
     },
     {
-      "job_source": "inputs/job_3.txt",
+      "job_source": "inputs/job_2.txt",
       "fit_score": 90,
       "seniority_guess": "lead",
       "pros": [
-        "Experiencia en analítica avanzada, machine learning y arquitectura de soluciones Big Data en entornos enterprise.",
-        "Liderazgo de procesos end-to-end desde el levantamiento de requerimientos hasta el desarrollo, validación y despliegue de modelos en producción.",
-        "Experiencia en infraestructura cloud, incluyendo Microsoft Azure, Azure Databricks, Azure Event Hub y Azure DevOps.",
-        "Conocimiento avanzado en machine learning, con habilidades en scikit-learn, XGBoost, TensorFlow y feature engineering.",
-        "Capacidad para diseñar e implementar modelos analíticos productivos, indicadores de gestión y dashboards que mejoren la eficiencia del negocio."
+        "Experiencia mínima de 5-7 años en análisis de datos y modelado en entornos financieros, retail o similar",
+        "Conocimientos avanzados de Python, R y SQL, así como experiencia en herramientas de visualización de datos",
+        "Habilidades de liderazgo, capacidad de gestión de proyectos y experiencia en la conducción de equipos de datos",
+        "Excelentes habilidades de comunicación y capacidad para traducir insights analíticos a términos de negocio"
       ],
       "gaps": [
-        "Falta información sobre las herramientas específicas utilizadas en el puesto (por ejemplo, si se utiliza una plataforma de datos específica).",
-        "No se menciona experiencia directa en data governance y plataformas de datos.",
-        "No se menciona conocimiento avanzado en datos industriales, IoT o SCADA."
+        "Información sobre el impacto económico de las iniciativas analíticas en el puesto descrito",
+        "Especificaciones del equipo que se le pedirá liderar en el nuevo rol"
       ],
       "missing_keywords": [
-        "data governance",
-        "plataforma de datos",
+        "impacto económico",
+        "equipo"
+      ],
+      "recommended_cv_bullets": [
+        "Desarrollé modelos predictivos de churn para distintos productos y segmentos, modelos de riesgo operativo y sistemas de detección de fallas masivas",
+        "Colaboré con los líderes de otras áreas para entender sus necesidades y traducirlas en proyectos analíticos que generen impacto en el negocio",
+        "Evalué y seleccioné herramientas y tecnologías de análisis de datos para optimizar la eficiencia y precisión en los modelos"
+      ],
+      "final_recommendation": "apply"
+    },
+    {
+      "job_source": "inputs/job_3.txt",
+      "fit_score": 95,
+      "seniority_guess": "lead",
+      "pros": [
+        "Experiencia avanzada en analítica, machine learning y arquitectura de soluciones Big Data",
+        "Liderazgo de procesos end-to-end en entornos enterprise",
+        "Conocimientos específicos sobre la plataforma Azure Databricks y Lakehouse",
+        "Experiencia en implementación de modelos productivos a gran escala",
+        "Dominio en metodologías cuantitativas, KPIs y modelos predictivos"
+      ],
+      "gaps": [
+        "Falta de información sobre habilidades específicas en datos industriales, IoT o SCADA (aunque se menciona experiencia similar)",
+        "No hay mención a la gestión de buenas prácticas de calidad, catalogación y linaje de datos",
+        "No hay información sobre las herramientas específicas utilizadas para la implementación de modelos analíticos"
+      ],
+      "missing_keywords": [
         "datos industriales",
         "iot",
         "scada"
       ],
       "recommended_cv_bullets": [
-        "- Diseñé e implementé modelos analíticos productivos que mejoren la eficiencia del negocio.",
-        "- Lideré la estrategia de analítica y BI de la compañía, impulsando el uso de datos para la toma de decisiones estratégicas y operacionales.",
-        "- Supervisaré el desarrollo y evolución de la arquitectura y plataforma de datos, incluyendo pipelines de datos, procesos ETL/ELT e integración con sistemas corporativos y operacionales."
+        "Lideré un equipo multidisciplinario en el desarrollo y consolidamiento del gobierno de datos corporativo",
+        "Impulsaré iniciativas de innovación basadas en datos, incluyendo analítica avanzada e integración de datos industriales u operacionales",
+        "Desarrollaré y implementar políticas, estándares y roles para asegurar calidad, seguridad y trazabilidad de la información"
       ],
       "final_recommendation": "apply"
     },
     {
       "job_source": "inputs/job_4.txt",
-      "fit_score": 98,
+      "fit_score": 87,
       "seniority_guess": "lead",
       "pros": [
-        "Experiencia líder en ciencia de datos y análisis avanzado",
-        "Conocimiento profundo de herramientas de Big Data y cloud (Azure, Sagemaker)",
-        "Dominio de plataformas Cloud (Microsoft Azure) y frameworks de machine learning (TensorFlow, Keras)",
-        "Habilidades avanzadas en Python, SQL y estadística",
-        "Experiencia gestionando proyectos de ciencia de datos"
+        "Experiencia gestionando proyectos de ciencia de datos",
+        "Conocimiento avanzado de librerías para la modelación en base a datos (Sklearn, Keras, Numpy)",
+        "Conocimiento de herramientas de gestión en la nube (Sagemaker, S3, Lambdas, Step Functions, etc)",
+        "Conocimiento avanzado de Python y SQL",
+        "Conocimiento de Frameworks de Machine Learning, IA Gen y puesta en producción de modelos",
+        "Dominio de plataformas Cloud (ideal AWS)",
+        "Conocimientos avanzados en estadística"
       ],
       "gaps": [
-        "Falta información sobre objetivos a corto plazo"
+        "Mención explícita a experiencia con herramientas específicas como Delta Lake o Arquitectura Lakehouse basada en Azure Databricks",
+        "Información sobre conocimiento específico de ciertas áreas de análisis (por ejemplo, análisis financiero o análisis económico)"
       ],
       "missing_keywords": [
-        "objetivos",
-        "proyectos futuros"
+        "Análisis de datos complejos",
+        "Implementación de modelos de aprendizaje automático",
+        "Desarrollo de soluciones analíticas a gran escala"
       ],
       "recommended_cv_bullets": [
-        "- Diseñar y desarrollar soluciones analíticas que se integren en los procesos del negocio, apoyando la toma de decisiones estratégicas.",
-        "- Analizar datos de comportamiento de clientes para construir modelos matemáticos que estimen impactos cuantitativos en variables clave."
+        "Diseñé e implementé múltiples modelos predictivos de churn para distintos productos y segmentos, modelos de riesgo operativo y sistemas de detección de fallas masivas.",
+        "Lideré un equipo multidisciplinario compuesto por Data Scientist, Arquitecto de Datos, Especialista en Metadata, Especialista en Calidad del Dato y Business Analyst."
       ],
       "final_recommendation": "apply"
     }
   ],
-  "errors": [
-    {
-      "job_source": "inputs/job_1.txt",
-      "error": "JSONDecodeError: Expecting ',' delimiter: line 1 column 789 (char 788)"
-    }
-  ],
+  "errors": [],
   "provider": "ollama",
   "ollama_base_url": "http://localhost:11434",
   "ollama_chat_model": "llama3.2:3b-instruct-fp16"

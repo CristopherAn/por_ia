@@ -89,10 +89,15 @@ def main():
         print(f"    chunked {len(docs)} chunks ({fmt_s(time.perf_counter() - t0)})")
 
     t0 = log_step("index chunks in ChromaDB")
-    rag_utils.index_chunks(all_chunks, settings)
+    persist_used = rag_utils.index_chunks(all_chunks, settings)
     log_done(t0, f"indexed {len(all_chunks)} chunks")
 
-    print(f"\nIndexing completado. Base de datos en: {settings.persist_directory}")
+    print(f"\nIndexing completado. Base de datos en: {persist_used}")
+    if os.path.normpath(persist_used) != os.path.normpath(settings.persist_directory):
+        print(
+            "    [WARN] Se uso una ruta fallback. "
+            "Para usarla en matching, actualiza rag.persist_directory en tu config."
+        )
 
 
 if __name__ == "__main__":
