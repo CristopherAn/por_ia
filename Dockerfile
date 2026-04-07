@@ -10,4 +10,4 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY . /app
 
-CMD ["python", "run_rag_pipeline.py", "--help"]
+CMD ["python", "match_jobs.py", "--help"]

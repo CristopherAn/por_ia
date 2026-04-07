@@ -16,3 +16,7 @@ def load_config_file(path: str, *, fallback_path: str | None = None) -> Dict[str
 def read_text_file(path: str) -> str:
     with open(path, "r", encoding="utf-8") as f:
         return f.read().strip()
+
+
+def normalize_local_path(path: str) -> str:
+    return os.path.normpath(path).replace("\\", "/")

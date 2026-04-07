@@ -1,220 +1,27 @@
-Skip to main content
-LinkedIn
+En Consorcio creemos en espacios de trabajo inclusivos, donde las diferencias son respetadas, valoradas y consideradas, permitiendo que cada persona pueda desarrollar plenamente sus talentos.
 
-Jobs
-Data Scientist - CL
-Clear text
-Santiago
-Clear text
-
-Join now
-Sign in
-Imagemaker
-Data Scientist - CL
-Imagemaker Chile
-Apply 
+Si estás buscando un entorno desafiante, con oportunidades reales de crecimiento profesional, ¡esta puede ser tu oportunidad! En Consorcio estamos en búsqueda de un Jefe de Ciencia de Datos, quien será responsable de liderar el diseño, mejora e implementación de modelos analíticos que permitan predecir comportamientos de clientes e impulsar mejoras en los procesos de negocio del Grupo, a través de soluciones y productos basados en datos.
 
 
 
+💡 ¿Cuáles serán tus principales funciones?
 
-Imagemaker
-Data Scientist - CL
-Imagemaker  Chile
-3 weeks ago  38 applicants
-  
-See who Imagemaker has hired for this role
+Diseñar y desarrollar soluciones analíticas que se integren en los procesos del negocio, apoyando la toma de decisiones estratégicas.
+Analizar datos de comportamiento de clientes para construir modelos matemáticos que estimen impactos cuantitativos en variables clave.
+Identificar segmentos de clientes y proponer ofertas de valor diferenciadas para cada uno.
+ 
 
-Apply 
+🔍 ¿Qué buscamos?
 
-
-
-
-Save
-
-Department: Operations
-
-Location: Chile
-
-
-Description
-
-We are looking for a Data Scientist with advanced English proficiency to join a Loyalty Project focused on enhancing customer engagement and long-term retention. This role will play a key part in personalizing the customer experience through data-driven products and machine learning models at scale.
-
-This opportunity is 100% remote.
-
-Key Responsibilities
-
-● Explore, build and run end-to-end machine learning models (supervised and unsupervised) to personalize the LATAM Pass experience.
-● Design and execute experimentation frameworks, including A/B tests, to validate impact and drive data-informed decisions.
-● Develop scalable data products and continuously measure their business impact.
-● Partner with Product, Engineering, and Design teams to translate complex business problems into robust technical solutions.
-● Communicate insights and technical trade-offs clearly to influence decision-making.
-● Ensure production-grade quality, monitoring, and continuous improvement of deployed models.
-
-Skills, Knowledge and Expertise
-
-● Significant hands-on experience delivering machine learning solutions in production
-environments.
-● Strong expertise in supervised and unsupervised learning, model evaluation, and
-experimentation methodologies (e.g., A/B testing).
-● Proven experience working in multidisciplinary digital product teams.
-● Strong ability to communicate complex technical concepts and influence stakeholders.
-● Proficiency in Python and SQL, and experience working in cloud-based data
-environments.
-● Demonstrated, disruptive use of AI-native tools (e.g., generative AI assistants, copilots)
-to accelerate personal productivity and development cycles.
-● Cloud GCP is mandatory
-
-Benefits
-
-Being a Maker is cool: we offer great benefits and plenty of activities to enjoy together!🏖️ Don’t worry, be happy: 3 extra days off per year in addition to your vacation.
-✨ Unpaid leave so you can pursue your dreams.
-🏥 100% free complementary health insurance for Makers.
-🤓 Training programs, English classes, and much more!
-🎂 A day off for your birthday and half a day off for your children’s birthdays.
-💰 Bonuses that give you breathing room: national holidays, Christmas, marriage/civil union, birth or adoption of children, and more.
-💳 Agreements and preferential rates with partner banks.
+Profesional titulado de Ingeniería Estadística, Ingeniería Civil o Ingeniería Matemática.
+Deseable doctorado o magister orientado a temas como ciencia de datos, machine learning, estadística, IA, etc.
+Experiencia gestionando proyectos de ciencia de datos.
+Conocimiento avanzado de librerías para la modelación en base a datos como Sklearn, Keras, Numpy, etc.
+Conocimiento de herramientas de gestión en la nube para el trabajo eficiente en la nube (Sagemaker, S3, Lambdas, Step Functions, etc).
+Conocimiento avanzado de Python y SQL.
+Conocimiento en Frameworks de Machine Learning, IA Gen y puesta en producción de modelos.
+Dominio de plataformas Cloud (ideal AWS).
+Conocimiento de herramientas de Big Data y conocimientos avanzados en estadística.
 
 
-As part of our commitment to inclusion, this position is open under Law 21.015. We encourage candidates to apply by submitting their CV.
-
-Show less 
-Seniority level
-Mid-Senior level
-Employment type
-Full-time
-Job function
-Engineering and Information Technology
-Industries
-IT Services and IT Consulting
-  
-Referrals increase your chances of interviewing at Imagemaker by 2x
-
-See who you know
-Get notified about new Data Scientist jobs in Chile.
-
-Sign in to create job alert
-Similar jobs
-Data Scientist - Remote - Talent Pool
-Data Scientist - Remote - Talent Pool
-Kake
-Chile
-2 weeks ago
-Data Scientist MINERIA
-Data Scientist MINERIA
-Stefanini Group
-Chile
-3 weeks ago
-React Frontend Developer - Remote Work
-React Frontend Developer - Remote Work
-BairesDev
-Chile
-3 days ago
-IA Engineer 🚀
-IA Engineer 🚀
-SII Group Chile
-Santiago, Santiago Metropolitan Region, Chile
-2 days ago
-Ingeniero/a de Machine Learning
-Ingeniero/a de Machine Learning
-Suncast
-Chile
-$700 - $800
-1 week ago
-[Tuyển dụng] Giảng viên chuyên viên phân tích dữ liệu
-[Tuyển dụng] Giảng viên chuyên viên phân tích dữ liệu
-CodeGym Vietnam
-Arica, Arica and Parinacota Region, Chile
-4 months ago
-Show more jobs like this 
-People also viewed
-Young Professional – Processes Analyst - Remote Work
-Young Professional – Processes Analyst - Remote Work
-BairesDev
-
-Valparaiso Region, Chile
-21 hours ago
-AI Machine Learning Engineer - Remote - Latin America
-AI Machine Learning Engineer - Remote - Latin America
-FullStack
-
-Santiago Metropolitan Area
-23 hours ago
-Data Science Consultant
-Data Science Consultant
-EPAM Systems
-
-Chile
-5 days ago
-Data Science Consultant
-Data Science Consultant
-EPAM Systems
-
-Chile
-5 days ago
-Data Science Consultant
-Data Science Consultant
-EPAM Systems
-
-Chile
-6 days ago
-Data Science Consultant
-Data Science Consultant
-EPAM Systems
-
-Chile
-5 days ago
-10x Engineer
-10x Engineer
-SFR3 Fund
-
-Chile
-1 month ago
-Python/Django Software Engineer
-Python/Django Software Engineer
-Launch Potato
-
-Valparaíso, Valparaiso Region, Chile
-3 weeks ago
-AI Machine Learning Engineer - Remote - Latin America
-AI Machine Learning Engineer - Remote - Latin America
-FullStack
-
-Valparaíso, Valparaiso Region, Chile
-23 hours ago
-Data Scientist Senior - REMOTE WORK | REF#284113
-Data Scientist Senior - REMOTE WORK | REF#284113
-BairesDev
-
-Santiago, Santiago Metropolitan Region, Chile
-9 months ago
-
-Explore top content on LinkedIn
-Find curated posts and insights for relevant topics all in one place.
-
-View top content
-LinkedIn
-© 2026
-About
-Accessibility
-User Agreement
-Privacy Policy
-Cookie Policy
-Copyright Policy
-Brand Policy
-Guest Controls
-Community Guidelines
-LinkedIn
-
-Know when new jobs open up
-
-Never miss a job alert with the new LinkedIn app for Windows.
-
-Get the app
-
-
-
-
-
-
-
+Esta oferta se encuentra acogida a la Ley N°21.015, que promueve la inclusión laboral de personas con discapacidad.

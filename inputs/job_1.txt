@@ -1,55 +1,59 @@
-Senior Business Analyst
-Grupo Falabella  Las Condes, Santiago Metropolitan Region, Chile
-2 weeks ago   Over 200 applicants
-  
-See who Grupo Falabella has hired for this role
-
-Apply
-Save
-
-Direct message the job poster from Grupo Falabella
-
-Andrés LópezClick here to view Andrés López’s profile
-Andrés López
-Psicólogo de la Universidad de Chile | Consultor Head Hunter | Inglés C1 | Actualmente Desarrollándome en el Área de Reclutamiento TI
-Somos más de 90 mil personas que, día a día, dedicamos nuestra pasión y energía a cumplir nuestro Propósito de “Simplificar y Disfrutar Más la Vida”. Propósito que hoy vive a través de nuestro ecosistema físico y digital en todas nuestras empresas. Valoramos las distintas miradas porque entendemos que la diversidad es la clave de nuestra innovación. Queremos ir más allá de cualquier límite, desafiarnos constantemente, divertirnos haciendo lo que nos gusta y dejar huella en lo que hacemos. Y sabemos que existe una forma de hacerlo: como UN SOLO EQUIPO.
+En Ripley Chile, lo tenemos todo ¡Solo nos falta tu talento! 🤩
 
 
 
-Hoy nos encontramos en la búsqueda de nuestro próximo Senior Business Analyst para el área de servicios financieros.
+Promovemos equipos diversos y colaborativos, buscando mejorar la experiencia de nuestros clientes a través de la innovación y decisiones cada vez más data-driven. ¡Súmate a una industria ágil y desafiante!
 
 
 
-Misión del Cargo
+¡Postula para ser parte de nuestro equipo!
 
-Asegurar la correcta definición, análisis y priorización de iniciativas digitales para la banca empresas, conectando necesidades del negocio con soluciones viables y orientadas a valor.
-
-
-
-Funciones
-
-Levantar, analizar y priorizar requerimientos junto a stakeholders del negocio, facilitando la correcta alineación entre áreas.
-Traducir necesidades comerciales en definiciones funcionales, asegurando claridad para los equipos de desarrollo.
-Evaluar productos digitales, proponiendo mejoras basadas en métricas y objetivos de negocio.
-Gestionar y negociar expectativas con distintos equipos, resolviendo dependencias y asegurando avance en los proyectos.
-Participar en ceremonias ágiles y apoyar al líder funcional en la gestión del roadmap del portafolio.
-Monitorear métricas de uso, performance y valor, identificando oportunidades de optimización.
-
-
-Requisitos
-
-Desde 2 años en roles de BA, PO, PA o similares.
-Experiencia en productos digitales, idealmente en Fintech o banca.
-Sólida capacidad de negociación y relacionamiento con stakeholders de alto impacto.
-Manejo de Jira y Confluence.
-Trabajo con métricas de negocio y análisis de KPIs.
-Conocimientos básicos de SQL.
-Capacidad para trabajar en equipos ágiles y en ambientes de cambio constante.
-Perfil autónomo, proactivo y con foco en resolver.
-
-
-Si crees que tienes todo lo necesario para el cargo, postula con nosotros, queremos conocer talento con muchas ganas de generar una carrera profesional con nosotros!
+Estamos en búsqueda de nuestro/a nuevo/a Manager Data Scientist para liderar nuestro equipo de Data Science y potenciar proyectos analíticos de alto impacto.
 
 
 
-Conoce más oportunidades para vivir la #ExperienciaFalabella en https://muevete.falabella.com/
+¿Cuál será tu principal desafío? 🚀
+
+Liderar y coordinar la creación, mejora y despliegue de modelos predictivos y soluciones de machine learning, trabajando estrechamente con áreas de negocio para traducir necesidades en iniciativas analíticas concretas, asegurando calidad de datos, buenas prácticas de gobernanza y comunicación efectiva de insights para la toma de decisiones.
+
+
+
+Funciones del cargo:
+
+• Supervisar y guiar al equipo de Data Scientists en el desarrollo y mejora de modelos predictivos y algoritmos de machine learning.
+
+ • Levantar necesidades con líderes de distintas áreas y transformarlas en proyectos analíticos con impacto medible en el negocio.
+
+ • Evaluar y seleccionar herramientas y tecnologías para mejorar eficiencia, escalabilidad y precisión de los modelos.
+
+ • Asegurar calidad y consistencia de los datos utilizados en los análisis, promoviendo prácticas de gobernanza de datos.
+
+ • Generar reportes y comunicar hallazgos al liderazgo, traduciendo insights analíticos a lenguaje de negocio para soportar decisiones estratégicas.
+
+¿Qué valoramos en tu postulación? 🎯
+
+• Formación en Estadística, Matemáticas, Ingeniería, Ciencias de la Computación o carrera afín.
+
+ • 5–7 años de experiencia en análisis de datos y modelado, idealmente en entornos retail o similares.
+
+ • Conocimientos avanzados de Python, R y SQL, y experiencia con herramientas de visualización de datos.
+
+ • Habilidades de liderazgo, gestión de proyectos y experiencia conduciendo equipos de datos.
+
+ • Excelentes habilidades de comunicación y capacidad para convertir insights en decisiones y acciones de negocio.
+
+¿Por qué trabajar en Ripley? ❤️💜💛
+
+Capacitaciones y entrenamiento para tu desarrollo profesional.
+
+ Tasa preferencial en productos Banco Ripley.
+
+ Seguro complementario gratuito.
+
+ Código de vestimenta flexible.
+
+ Descuentos en Tiendas Ripley.
+
+
+
+En Ripley y Banco Ripley valoramos la diversidad e inclusión. Es por esto que, en el marco de la Ley 21.015, te invitamos a postular y si necesitas algún ajuste razonable durante el proceso, no dudes en indicarlo.

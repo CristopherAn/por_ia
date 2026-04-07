@@ -1,62 +1,50 @@
-Data Scientist
-Veltis Latam  Santiago, Santiago Metropolitan Region, Chile
-2 months ago  79 applicants
-  
-See who Veltis Latam has hired for this role
-
-Apply 
+¡Si te encantan los desafíos, únete a Copec Flux y cambia tu energía! 
 
 
 
-
-Save
-
-¡En Veltis Latam buscamos un/a Data Scientist!
-
-En Veltis Latam, empresa líder en servicios para la industria minera y en constante evolución digital, buscamos incorporar a nuestro/a próximo/a Data Scientist, un rol clave para impulsar proyectos de inteligencia artificial, analítica avanzada y soluciones basadas en datos que apoyen la toma de decisiones estratégicas del negocio.
-
-📍 Ubicación Santiago (con presencia en terreno según necesidad)
-
-🎯 Tu propósito
-
-El objetivo del cargo es diseñar, entrenar e implementar modelos de Machine Learning e Inteligencia Artificial en entornos cloud, especialmente AWS, contribuyendo a la optimización de procesos, generación de insights de negocio y desarrollo de soluciones basadas en modelos de lenguaje e IA generativa.
-
-🧾 Responsabilidades clave
-
-Diseñar y entrenar modelos de ML/AI utilizando AWS SageMaker, incluyendo preparación de datos y optimización de modelos.
-Implementar soluciones de IA generativa con AWS Bedrock e integración de LLMs en aplicaciones empresariales.
-Automatizar pipelines de datos y modelos (ETL, feature engineering, entrenamiento y despliegue).
-Evaluar desempeño de modelos asegurando calidad, robustez y escalabilidad.
-Colaborar con equipos de negocio y tecnología para traducir necesidades estratégicas en soluciones de datos.
-Gestionar infraestructura en AWS asegurando eficiencia de costos, seguridad y escalabilidad.
-Documentar y comunicar resultados de forma clara a stakeholders técnicos y no técnicos.
+Hoy, nuestra Gerencia de tecnología, se encuentra en la búsqueda de un Líder Analítica y Gobierno de Datos, siendo el responsable de desarrollar y consolidar el gobierno de datos corporativo, liderar la arquitectura y plataforma de datos, e impulsar capacidades de analítica avanzada que habiliten iniciativas de optimización y transformación digital, integrando datos de sistemas corporativos y operacionales (SCADA, sensores y plataformas de operación).
 
 
-Requisitos
+
+Este objetivo lo lograrás por medio de:
+
+Diseñar e implementar el modelo de gobierno de datos corporativo, estableciendo políticas, estándares y roles que aseguren calidad, seguridad y trazabilidad de la información.
+Liderar la estrategia de analítica y BI de la compañía, impulsando el uso de datos para la toma de decisiones estratégicas y operacionales.
+Gestionar el levantamiento de necesidades analíticas con las distintas áreas del negocio, priorizando iniciativas de datos que generen valor para la organización.
+Supervisar el desarrollo y evolución de la arquitectura y plataforma de datos, incluyendo pipelines de datos, procesos ETL/ELT e integración con sistemas corporativos y operacionales.
+Impulsar el desarrollo de modelos analíticos, indicadores de gestión y dashboards, que permitan mejorar la eficiencia, control y seguimiento del negocio.
+Asegurar buenas prácticas de calidad, catalogación y linaje de datos, promoviendo una cultura organizacional basada en datos.
+Liderar y coordinar al equipo de ingeniería y analítica de datos, así como proveedores tecnológicos asociados a la plataforma de datos.
+Promover iniciativas de innovación basadas en datos, incluyendo analítica avanzada e integración de datos industriales u operacionales cuando corresponda.
 
 
-👩‍💼 Perfil requerido
+Requisitos:
 
-Formación en Ingeniería Informática o carrera afín.
-Al menos 3 años de experiencia en desarrollo de soluciones de datos, ML o AI en entornos AWS.
-Experiencia con contenedores y orquestadores (Docker, Kubernetes).
-Conocimientos en CI/CD y herramientas como GitHub Actions, Jenkins o GitLab CI.
-Familiaridad con infraestructura como código (Terraform, CloudFormation o ARM Templates).
-Español nativo e inglés intermedio/avanzado.
+Ingeniero/a Civil Informático, en Computación, Industrial o carrera afín.
++7 años de experiencia en datos, analítica o arquitectura de datos.
+ Experiencia en data governance y plataformas de datos.
+ Manejo avanzado de cloud (AWS, GCP o Azure), SQL/NoSQL e integración de datos
+Experiencia en datos industriales, IoT o SCADA (deseable).
 
-Beneficios
 
-🌱 ¿Qué te ofrecemos?
+Beneficios:
 
-Ser parte de una compañía en constante evolución, con foco en la excelencia, la innovación y el desarrollo de sus personas.
-Posibilidades reales de crecimiento y aprendizaje.
-Beneficios corporativos
-Seguro complementario de vida, salud y dental
-Convenios con gimnasios y establecimientos de salud
-Acceso a beneficios y descuentos a través de nuestra Caja de Compensación
-Día libre por cumpleaños 🎉
-Nosotros
 
-Veltis Latam y sus compañías operativas Berliam, Steel y Walvis son líderes en la entrega de servicios y soluciones para la minería y las industrias relevantes del país. Con presencia en los principales yacimientos y más de 3,500 trabajadores, cuentan con más de 500 equipos operativos.
 
-Nuestra empresa opera bajo los más altos estándares de Seguridad, Integridad, Colaboración, Innovación y Excelencia, posicionándonos como parte esencial de la cadena de valor de nuestros clientes. Desarrollamos relaciones a largo plazo, ayudándolos a alcanzar sus resultados de negocio mediante la optimización del rendimiento sustentable, la integridad y eficiencia de sus activos.
+Al ser parte de Copec Flux podrás acceder a:
+
+Seguro Complementario de Vida y Salud💛
+2 días administrativos al año de libre disposición.
+Plataformas como Ubits para los que nos gusta aprender constantemente.😏
+Convenios para cursos de inglés y centros educacionales 📕
+Atractivos convenios con diferentes marcas y/o productos
+Disfrutar de nuestros espacios de recreación y esparcimiento 🏓
+Buses de acercamiento (desde y hacia el metro) 🚆
+Bicicletero 🚲 Cafe ☕ Frutas de estación🍎
+
+
+¡Conversemos y entérate de los otros beneficios!🥳
+
+
+
+*Esta oferta laboral se rige bajo la Ley Nº 21.015 que incentiva la inclusión de personas con discapacidad al mundo laboral.

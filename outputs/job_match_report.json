@@ -1,116 +1,115 @@
 {
-  "profile_url": "https://cl.linkedin.com/in/cristopher-bustos-a63a5233/",
-  "jobs_count": 6,
+  "profile_source": "inputs/profile.txt",
+  "jobs_count": 4,
   "results": [
     {
-      "job_url": "./inputs/job_1.txt",
-      "fit_score": 90,
-      "seniority_guess": "senior|lead|unknown",
+      "job_source": "inputs/job_1.txt",
+      "fit_score": 80,
+      "seniority_guess": "lead",
       "pros": [
-        "Experiencia en analítica avanzada y Big Data",
-        "Conocimientos en machine learning y arquitectura de soluciones",
-        "Habilidad para liderar procesos end-to-end y gestionar equipos",
-        "Experto en implementación de modelos productivos a gran escala"
+        "Experiencia de liderazgo y gestión de equipos",
+        "Conocimientos avanzados en Python, R y SQL",
+        "Habilidades de comunicación efectiva para traducir insights a lenguaje de negocio",
+        "Experiencia en análisis de datos y modelado con herramientas de machine learning"
       ],
       "gaps": [
-        "No se menciona experiencia directa en Fintech o banca",
-        "No se indica habilidad específica en SQL",
-        "No se mencionan conocimientos en métricas de uso, performance y valor"
+        "Falta de información sobre las metas específicas del cargo",
+        "No se menciona experiencia directa en el sector financiero"
       ],
       "missing_keywords": [
-        "Fintech",
-        "banca",
-        "SQL"
+        "métodos cuantitativos",
+        "KPIs"
       ],
       "recommended_cv_bullets": [
-        "Análisis y priorización de iniciativas digitales para la banca empresas",
-        "Levantar requerimientos junto a stakeholders del negocio",
-        "Traducir necesidades comerciales en definiciones funcionales"
+        "Lideré proyectos de reportería ejecutiva para apoyar la toma de decisiones estratégicas",
+        "Desarrollé soluciones analíticas productivas sobre Azure Databricks integradas con pipelines CI/CD"
       ],
       "final_recommendation": "apply"
     },
     {
-      "job_url": "./inputs/job_2.txt",
-      "fit_score": 80,
+      "job_source": "inputs/job_2.txt",
+      "fit_score": 90,
       "seniority_guess": "lead",
       "pros": [
-        "experiencia en analítica avanzada y machine learning",
-        "dominio de arquitectura Lakehouse basada en Delta Lake",
-        "habilidades en DevOps y producción con Azure DevOps",
-        "experiencia en liderazgo de equipos multidisciplinarios"
+        "Experiencia mínima de 5-7 años en análisis de datos y modelado en entornos financieros, retail o similar",
+        "Conocimientos avanzados de Python, R y SQL, así como experiencia en herramientas de visualización de datos",
+        "Habilidades de liderazgo, capacidad de gestión de proyectos y experiencia en la conducción de equipos de datos",
+        "Excelentes habilidades de comunicación y capacidad para traducir insights analíticos a términos de negocio"
       ],
       "gaps": [
-        "falta experiencia directa en análisis de recorrido de clientes",
-        "no se menciona experiencia específica en A/B testing"
+        "Información sobre el impacto económico de las iniciativas analíticas en el puesto descrito",
+        "Especificaciones del equipo que se le pedirá liderar en el nuevo rol"
       ],
-      "missing_keywords": [],
+      "missing_keywords": [
+        "impacto económico",
+        "equipo"
+      ],
       "recommended_cv_bullets": [
-        "Análisis de recorrido de clientes y identificación de oportunidades de mejora en conversión, retención y ventas",
-        "Implementación de A/B testing para optimizar resultados"
+        "Desarrollé modelos predictivos de churn para distintos productos y segmentos, modelos de riesgo operativo y sistemas de detección de fallas masivas",
+        "Colaboré con los líderes de otras áreas para entender sus necesidades y traducirlas en proyectos analíticos que generen impacto en el negocio",
+        "Evalué y seleccioné herramientas y tecnologías de análisis de datos para optimizar la eficiencia y precisión en los modelos"
       ],
       "final_recommendation": "apply"
     },
     {
-      "job_url": "./inputs/job_3.txt",
-      "fit_score": 80,
-      "seniority_guess": "lead|unknown",
-      "pros": [
-        "Experiencia liderando procesos end-to-end en entornos enterprise",
-        "Herramientas de Machine Learning y Big Data como Azure Databricks, Azure Event Hub, etc.",
-        "Arquitectura Lakehouse basada en Delta Lake",
-        "Conocimientos en DevOps y Producción con CI/CD en Azure DevOps"
-      ],
-      "gaps": [
-        "Falta de información sobre la empresa Veltis Latam",
-        "No se menciona si el candidato tiene experiencia con LLMs (Modelos de Lenguaje Generativo)"
-      ],
-      "missing_keywords": [
-        "LLMs",
-        "conocimientos en seguridad"
-      ],
-      "recommended_cv_bullets": [
-        "Diseñé e implementé múltiples modelos predictivos de churn para distintos productos y segmentos",
-        "Colaboré con equipos de negocio y tecnología para traducir necesidades estratégicas en soluciones de datos",
-        "Gestioné infraestructura en Azure asegurando eficiencia de costos, seguridad y escalabilidad"
-      ],
-      "final_recommendation": "apply|maybe|no"
-    },
-    {
-      "job_url": "./inputs/job_5.txt",
-      "fit_score": 90,
+      "job_source": "inputs/job_3.txt",
+      "fit_score": 95,
       "seniority_guess": "lead",
       "pros": [
-        "Experiencia de liderazgo de equipos multidisciplinarios en proyectos de análisis y modelado de datos",
-        "Dominio avanzado de tecnologías de data science, incluyendo Python, SQL y herramientas de control de versiones",
-        "Habilidades sólidas en estadística y econometría, con experiencia en procesamiento de datos y construcción de modelos"
+        "Experiencia avanzada en analítica, machine learning y arquitectura de soluciones Big Data",
+        "Liderazgo de procesos end-to-end en entornos enterprise",
+        "Conocimientos específicos sobre la plataforma Azure Databricks y Lakehouse",
+        "Experiencia en implementación de modelos productivos a gran escala",
+        "Dominio en metodologías cuantitativas, KPIs y modelos predictivos"
       ],
       "gaps": [
-        "Falta de información sobre el contexto específico del trabajo en Cordada",
-        "No se menciona la experiencia específica en modelado de riesgos de crédito o análisis de negocio"
+        "Falta de información sobre habilidades específicas en datos industriales, IoT o SCADA (aunque se menciona experiencia similar)",
+        "No hay mención a la gestión de buenas prácticas de calidad, catalogación y linaje de datos",
+        "No hay información sobre las herramientas específicas utilizadas para la implementación de modelos analíticos"
       ],
       "missing_keywords": [
-        "contexto del trabajo",
-        "experiencia específica en riesgos de crédito"
+        "datos industriales",
+        "iot",
+        "scada"
       ],
       "recommended_cv_bullets": [
-        "- Lideré un equipo multidisciplinario para desarrollar y implementar modelos de machine learning",
-        "- Diseñaré e implementar múltiples modelos predictivos para distintos productos y segmentos",
-        "- Colaboraré con áreas de negocio, tecnología y producto para capturar requerimientos y priorizar iniciativas"
+        "Lideré un equipo multidisciplinario en el desarrollo y consolidamiento del gobierno de datos corporativo",
+        "Impulsaré iniciativas de innovación basadas en datos, incluyendo analítica avanzada e integración de datos industriales u operacionales",
+        "Desarrollaré y implementar políticas, estándares y roles para asegurar calidad, seguridad y trazabilidad de la información"
+      ],
+      "final_recommendation": "apply"
+    },
+    {
+      "job_source": "inputs/job_4.txt",
+      "fit_score": 87,
+      "seniority_guess": "lead",
+      "pros": [
+        "Experiencia gestionando proyectos de ciencia de datos",
+        "Conocimiento avanzado de librerías para la modelación en base a datos (Sklearn, Keras, Numpy)",
+        "Conocimiento de herramientas de gestión en la nube (Sagemaker, S3, Lambdas, Step Functions, etc)",
+        "Conocimiento avanzado de Python y SQL",
+        "Conocimiento de Frameworks de Machine Learning, IA Gen y puesta en producción de modelos",
+        "Dominio de plataformas Cloud (ideal AWS)",
+        "Conocimientos avanzados en estadística"
+      ],
+      "gaps": [
+        "Mención explícita a experiencia con herramientas específicas como Delta Lake o Arquitectura Lakehouse basada en Azure Databricks",
+        "Información sobre conocimiento específico de ciertas áreas de análisis (por ejemplo, análisis financiero o análisis económico)"
+      ],
+      "missing_keywords": [
+        "Análisis de datos complejos",
+        "Implementación de modelos de aprendizaje automático",
+        "Desarrollo de soluciones analíticas a gran escala"
+      ],
+      "recommended_cv_bullets": [
+        "Diseñé e implementé múltiples modelos predictivos de churn para distintos productos y segmentos, modelos de riesgo operativo y sistemas de detección de fallas masivas.",
+        "Lideré un equipo multidisciplinario compuesto por Data Scientist, Arquitecto de Datos, Especialista en Metadata, Especialista en Calidad del Dato y Business Analyst."
       ],
       "final_recommendation": "apply"
     }
   ],
-  "errors": [
-    {
-      "job_url": "./inputs/job_4.txt",
-      "error": "ValueError: Job parece ser login wall/landing (texto no útil)"
-    },
-    {
-      "job_url": "./inputs/job_6.txt",
-      "error": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
-    }
-  ],
+  "errors": [],
   "provider": "ollama",
-  "ollama_base_url": "http://host.docker.internal:11434",
+  "ollama_base_url": "http://localhost:11434",
   "ollama_chat_model": "llama3.2:3b-instruct-fp16"
 }

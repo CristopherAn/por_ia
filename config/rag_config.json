@@ -1,38 +1,25 @@
 {
-  "rag": {
-    "provider": "ollama",
-    "url": "https://www.linkedin.com/jobs/view/4384329438/",
-    "persist_directory": "./chroma_url_db",
-    "collection_name": "url_docs",
-    "artifacts_dir": "./rag_artifacts",
-
-    "ollama_base_url": "http://localhost:11434",
-    "ollama_chat_model": "llama3.2:3b-instruct-fp16",
-    "ollama_embedding_model": "nomic-embed-text",
-
-    "embedding_model": "text-embedding-3-large",
-    "chat_model": "gpt-5.2",
-
-    "chunk_size": 1000,
-    "chunk_overlap": 200,
-    "top_k": 4,
-
-    "reset_db": false
-  },
-  "match": {
-    "profile_text_path": "./inputs/profile.txt",
-    "profile_url": "https://cl.linkedin.com/in/cristopher-bustos-a63a5233/",
-    "job_text_glob": "./inputs/job_*.txt",
-    "job_urls": [
-      "https://www.linkedin.com/jobs/view/4384329438/",
-      "https://www.linkedin.com/jobs/view/4387500266/",
-      "https://www.linkedin.com/jobs/view/4352209131/",
-      "https://www.linkedin.com/jobs/view/4378848766/",
-      "https://www.linkedin.com/jobs/view/4373013732/",
-      "https://www.linkedin.com/jobs/view/4383746800/",
-      "https://www.linkedin.com/jobs/view/4389829040/"
-    ],
-    "output_path": "./outputs/job_match_report.json",
-    "prompt_template": "Tu tarea es evaluar si un candidato encaja con un puesto.\n\nPERFIL (texto):\n{profile}\n\nJOB (texto) [source={job_url}]:\n{job}\n\nDevuelve EXCLUSIVAMENTE un JSON válido con esta estructura exacta (sin markdown):\n{{\n  \"job_url\": \"...\",\n  \"fit_score\": 0,\n  \"seniority_guess\": \"junior|semi-senior|senior|lead|unknown\",\n  \"pros\": [\"...\"],\n  \"gaps\": [\"...\"],\n  \"missing_keywords\": [\"...\"],\n  \"recommended_cv_bullets\": [\"...\"],\n  \"final_recommendation\": \"apply|maybe|no\"\n}}\n\nReglas:\n- fit_score debe ser entero 0..100\n- pros/gaps deben ser concretos (skills, experiencia, dominio)\n- Si falta info, poné unknown y explicá en gaps\n- En job_url poné exactamente: {job_url}\n"
-  }
+    "rag":  {
+                "provider":  "ollama",
+                "persist_directory":  "./chroma_url_db",
+                "collection_name":  "url_docs",
+                "artifacts_dir":  "./rag_artifacts",
+                "ollama_base_url":  "http://localhost:11434",
+                "ollama_chat_model":  "llama3.2:3b-instruct-fp16",
+                "ollama_embedding_model":  "nomic-embed-text",
+                "chunk_size":  1000,
+                "chunk_overlap":  200,
+                "top_k":  4,
+                "reset_db":  false
+            },
+    "match":  {
+                  "profile_text_path":  "./inputs/profile.txt",
+                  "job_text_glob":  "./inputs/job_*.txt",
+                  "output_path":  "./outputs/job_match_report.json",
+                  "prompt_template":  "Tu tarea es evaluar si un candidato encaja con un puesto.\n\nPERFIL (texto):\n{profile}\n\nJOB (texto) [source={job_source}]:\n{job}\n\nDevuelve EXCLUSIVAMENTE un JSON vÃƒÂ¡lido con esta estructura exacta (sin markdown):\n{{\n  \"job_source\": \"...\",\n  \"fit_score\": 0,\n  \"seniority_guess\": \"junior|semi-senior|senior|lead|unknown\",\n  \"pros\": [\"...\"],\n  \"gaps\": [\"...\"],\n  \"missing_keywords\": [\"...\"],\n  \"recommended_cv_bullets\": [\"...\"],\n  \"final_recommendation\": \"apply|maybe|no\"\n}}\n\nReglas:\n- fit_score debe ser entero 0..100\n- pros/gaps deben ser concretos (skills, experiencia, dominio)\n- Si falta info, ponÃƒÂ© unknown y explicÃƒÂ¡ en gaps\n- En job_source ponÃƒÂ© exactamente: {job_source}\n"
+              },
+    "cv":  {
+               "output_json_path":  "./outputs/tailored_cv.json",
+               "output_markdown_path":  "./outputs/tailored_cv.md"
+           }
 }
