@@ -31,3 +31,4 @@ rag_artifacts/
 # Local configs / secrets
 .env
 .env.*
+!.env.example
