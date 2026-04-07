@@ -1,4 +1,4 @@
-# RAG Matching de Empleos con Ollama
+# RAG Matching de Empleos
 
 Este proyecto toma un perfil en texto y varias descripciones de empleo (`.txt`) para:
 
@@ -6,26 +6,33 @@ Este proyecto toma un perfil en texto y varias descripciones de empleo (`.txt`) 
 2. Evaluar compatibilidad perfil vs jobs.
 3. Generar un CV nuevo consolidado para esos requisitos.
 
-Todo corre en local con Ollama.
+El pipeline usa un proveedor de LLM/embeddings configurable en `rag.provider` (actualmente implementado: `ollama`).
 
 ## Arquitectura
 
 ```mermaid
 flowchart TD
     A[Usuario] --> B[config/rag_config.json]
+    H[inputs/profile.txt + inputs/job_*.txt]
+    K[Proveedor LLM y Embeddings]
+
     B --> C[index_jobs.py]
+    H --> C
     C --> D[(ChromaDB)]
+    C --> K
+
     B --> E[match_jobs.py]
-    E --> D
+    H --> E
+    D --> E
+    E --> K
     E --> F[outputs/job_match_report.json]
+
     B --> G[generate_cv.py]
-    G --> F
-    G --> H[inputs/profile.txt + inputs/job_*.txt]
+    H --> G
+    F --> G
+    G --> K
     G --> I[outputs/tailored_cv.json]
     G --> J[outputs/tailored_cv.md]
-    K[Ollama<br/>llama3.2 + nomic-embed-text] --> C
-    K --> E
-    K --> G
 ```
 
 ## Flujo
@@ -52,10 +59,10 @@ Utilidades no centrales (`utils/`):
 ## Requisitos
 
 - Python 3.10+
-- Ollama corriendo localmente
-- Modelos:
-- `llama3.2:3b-instruct-fp16` (chat)
-- `nomic-embed-text` (embeddings)
+- Proveedor LLM/embeddings disponible (local o remoto)
+- Implementacion actual del proyecto: `ollama`
+- Modelo de chat por defecto en Ollama: `llama3.2:3b-instruct-fp16`
+- Modelo de embeddings por defecto en Ollama: `nomic-embed-text`
 
 Instalacion:
 
@@ -69,6 +76,7 @@ Archivo principal: `config/rag_config.json`
 
 Campos importantes:
 
+- `rag.provider`: proveedor de LLM/embeddings (actual: `ollama`)
 - `rag.persist_directory`: ruta de base vectorial
 - `match.profile_text_path`: perfil
 - `match.job_text_glob`: jobs
@@ -76,7 +84,7 @@ Campos importantes:
 - `cv.output_json_path`: salida estructurada de CV
 - `cv.output_markdown_path`: CV final en Markdown
 
-Ejemplo minimo:
+Ejemplo minimo (configuracion actual con `ollama`):
 
 ```json
 {
@@ -111,6 +119,23 @@ Ejemplo minimo:
 python index_jobs.py --config config/rag_config.json
 python match_jobs.py --config config/rag_config.json
 python generate_cv.py --config config/rag_config.json
+```
+
+### 1.1) Probar Gemma 4 sin editar config
+
+Si quieres evaluar otro LLM solo para esta corrida, usa overrides por CLI.
+Ejemplo (ajusta el tag segun `ollama list`, por ejemplo `gemma4:latest`):
+
+```bash
+python index_jobs.py --config config/rag_config.json --embedding-model nomic-embed-text
+python match_jobs.py --config config/rag_config.json --chat-model gemma4:latest
+python generate_cv.py --config config/rag_config.json --chat-model gemma4:latest
+```
+
+Opcionalmente puedes apuntar a otra URL de Ollama sin cambiar JSON:
+
+```bash
+python match_jobs.py --config config/rag_config.json --chat-model gemma4:latest --ollama-base-url http://localhost:11434
 ```
 
 ### 2) Local con entorno virtual (PowerShell)
@@ -162,9 +187,9 @@ docker compose run --rm rag python match_jobs.py --config config/rag_config.json
 docker compose run --rm rag python generate_cv.py --config config/rag_config.json
 ```
 
-### 6) Precondicion Ollama
+### 6) Precondicion del proveedor LLM (ejemplo con Ollama)
 
-Antes de ejecutar, verifica Ollama y modelos:
+Antes de ejecutar, verifica que tu proveedor este disponible. Ejemplo con Ollama:
 
 ```bash
 ollama serve
@@ -175,16 +200,15 @@ ollama list
 
 ## Troubleshooting
 
-### `Failed to connect to Ollama`
+### `Failed to connect to provider LLM` (ejemplo: Ollama)
 
-- Host local: `http://localhost:11434`
-- Docker: `http://host.docker.internal:11434`
+- Si usas Ollama en host local: `http://localhost:11434`
+- Si usas Ollama desde Docker: `http://host.docker.internal:11434`
 
 ### `PermissionError` o `disk I/O error` al indexar
 
 `index_jobs.py` intenta resetear la base y, si falla por locks de Windows/OneDrive, usa una ruta fallback en `%TEMP%`.
-
-Si aparece warning de fallback, usa esa misma ruta para matching/CV actualizando `rag.persist_directory`.
+Esa ruta fallback queda registrada y `match_jobs.py` / `generate_cv.py` la reutilizan automaticamente.
 
 ### El modelo devuelve formato invalido
 

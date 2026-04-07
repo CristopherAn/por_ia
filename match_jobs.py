@@ -274,6 +274,21 @@ def main():
         default=None,
         help="Sobrescribe el provider del JSON.",
     )
+    parser.add_argument(
+        "--chat-model",
+        default=None,
+        help="Sobrescribe rag.ollama_chat_model para la ejecucion.",
+    )
+    parser.add_argument(
+        "--embedding-model",
+        default=None,
+        help="Sobrescribe rag.ollama_embedding_model para la ejecucion.",
+    )
+    parser.add_argument(
+        "--ollama-base-url",
+        default=None,
+        help="Sobrescribe rag.ollama_base_url para la ejecucion.",
+    )
     args = parser.parse_args()
 
     t_total = log_step("match_jobs start")
@@ -289,10 +304,27 @@ def main():
 
     t0 = log_step("build settings")
     settings = rag_utils.settings_from_dict(rag_cfg)
+    runtime_overrides: Dict[str, Any] = {}
     if args.provider:
-        settings = rag_utils.settings_from_dict({"provider": args.provider}, base=settings)
+        runtime_overrides["provider"] = args.provider
+    if args.chat_model:
+        runtime_overrides["ollama_chat_model"] = args.chat_model
+    if args.embedding_model:
+        runtime_overrides["ollama_embedding_model"] = args.embedding_model
+    if args.ollama_base_url:
+        runtime_overrides["ollama_base_url"] = args.ollama_base_url
+    if runtime_overrides:
+        settings = rag_utils.settings_from_dict(runtime_overrides, base=settings)
     rag_utils.validate_env(settings)
-    log_done(t0, f"provider={settings.provider} ollama_base_url={settings.ollama_base_url}")
+    log_done(
+        t0,
+        (
+            f"provider={settings.provider} "
+            f"base_url={settings.ollama_base_url} "
+            f"chat_model={settings.ollama_chat_model} "
+            f"embedding_model={settings.ollama_embedding_model}"
+        ),
+    )
 
     profile_source = match_cfg.get("profile_text_path", "default")
     jobs = resolve_job_list(match_cfg)
@@ -391,6 +423,7 @@ def main():
         "provider": settings.provider,
         "ollama_base_url": settings.ollama_base_url,
         "ollama_chat_model": settings.ollama_chat_model,
+        "ollama_embedding_model": settings.ollama_embedding_model,
     }
 
     t0 = log_step(f"write report -> {output_path}")

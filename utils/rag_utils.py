@@ -47,6 +47,7 @@ DEFAULT_CHUNK_OVERLAP = int(os.getenv("RAG_CHUNK_OVERLAP", "200"))
 DEFAULT_K = int(os.getenv("RAG_TOP_K", "4"))
 DEFAULT_COLLECTION_NAME = os.getenv("RAG_COLLECTION_NAME", "url_docs")
 DEFAULT_ARTIFACTS_DIR = os.getenv("RAG_ARTIFACTS_DIR", "./rag_artifacts")
+LAST_PERSIST_PATH_FILE = "last_persist_directory.txt"
 
 
 def env_flag(name: str, default: bool = False) -> bool:
@@ -124,6 +125,106 @@ def artifacts_paths(settings: RAGSettings, name: str = "url") -> dict:
         "docs": os.path.join(base, "documents.json"),
         "chunks": os.path.join(base, "chunks.json"),
     }
+
+
+def _last_persist_path_file(settings: RAGSettings) -> str:
+    return os.path.join(artifacts_paths(settings)["base"], LAST_PERSIST_PATH_FILE)
+
+
+def save_last_persist_directory(settings: RAGSettings, persist_directory: str) -> None:
+    path = _last_persist_path_file(settings)
+    ensure_dir(os.path.dirname(path))
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(os.path.abspath(os.path.normpath(persist_directory)))
+
+
+def load_last_persist_directory(settings: RAGSettings) -> Optional[str]:
+    path = _last_persist_path_file(settings)
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            value = (f.read() or "").strip()
+    except Exception:
+        return None
+    if not value:
+        return None
+    return os.path.normpath(value)
+
+
+def _fallback_root_candidates() -> List[str]:
+    candidates: List[str] = []
+    local_app_data = os.getenv("LOCALAPPDATA")
+    if local_app_data:
+        candidates.append(os.path.join(local_app_data, "poc_ia", "chroma"))
+    candidates.append(os.path.join(tempfile.gettempdir(), "poc_ia_chroma"))
+
+    unique: List[str] = []
+    seen: set[str] = set()
+    for c in candidates:
+        key = os.path.normcase(os.path.abspath(c))
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(c)
+    return unique
+
+
+def _resolve_writable_fallback_root() -> str:
+    last_error: Optional[Exception] = None
+    for candidate in _fallback_root_candidates():
+        try:
+            ensure_dir(candidate)
+            return candidate
+        except Exception as exc:
+            last_error = exc
+            continue
+    if last_error is not None:
+        raise PermissionError(
+            f"No se pudo crear una carpeta fallback escribible. Candidatas: {_fallback_root_candidates()}"
+        ) from last_error
+    raise PermissionError("No hay rutas fallback configuradas.")
+
+
+def _latest_fallback_directory() -> Optional[str]:
+    candidates = []
+    for base in _fallback_root_candidates():
+        if not os.path.isdir(base):
+            continue
+        for name in os.listdir(base):
+            full = os.path.join(base, name)
+            if os.path.isdir(full) and name.startswith("run_"):
+                try:
+                    mtime = os.path.getmtime(full)
+                except OSError:
+                    continue
+                candidates.append((mtime, full))
+
+    if not candidates:
+        return None
+
+    candidates.sort(reverse=True)
+    return os.path.normpath(candidates[0][1])
+
+
+def _candidate_persist_directories(settings: RAGSettings) -> List[str]:
+    candidates: List[str] = []
+    seen: set[str] = set()
+
+    def add(path: Optional[str]) -> None:
+        if not path:
+            return
+        p = os.path.normpath(path)
+        key = os.path.normcase(os.path.abspath(p))
+        if key in seen:
+            return
+        seen.add(key)
+        candidates.append(p)
+
+    add(settings.persist_directory)
+    add(load_last_persist_directory(settings))
+    add(_latest_fallback_directory())
+    return candidates
 
 
 def save_documents(docs: List[Document], path: str) -> None:
@@ -282,17 +383,17 @@ def build_vectorstore(chunks: List[Document], settings: RAGSettings) -> Tuple[ob
             chroma_settings=chroma_settings,
             persist_directory=persist_directory,
         )
+        save_last_persist_directory(settings, persist_directory)
         return vs, persist_directory
     except Exception as exc:
         if not _is_disk_io_error(exc):
             raise
 
         # Fallback for unstable/synced directories on Windows (e.g. OneDrive).
-        fallback_base = os.path.join(tempfile.gettempdir(), "poc_ia_chroma")
-        ensure_dir(fallback_base)
+        fallback_base = _resolve_writable_fallback_root()
         fallback_dir = os.path.join(
             fallback_base,
-            f"run_{int(time.time())}",
+            f"run_{int(time.time() * 1000)}",
         )
         ensure_dir(fallback_dir)
         print(
@@ -308,6 +409,7 @@ def build_vectorstore(chunks: List[Document], settings: RAGSettings) -> Tuple[ob
             chroma_settings=chroma_settings,
             persist_directory=fallback_dir,
         )
+        save_last_persist_directory(settings, fallback_dir)
         return vs, fallback_dir
 
 
@@ -317,16 +419,47 @@ def index_chunks(chunks: List[Document], settings: RAGSettings) -> str:
 
 
 def load_vectorstore(settings: RAGSettings):
-    if not os.path.exists(settings.persist_directory):
-        raise FileNotFoundError(
-            f"No existe la base vectorial en: {settings.persist_directory}"
-        )
-
     embeddings = get_embeddings(settings)
     chroma_settings = ChromaSettings(anonymized_telemetry=False)
-    return Chroma(
-        persist_directory=settings.persist_directory,
-        embedding_function=embeddings,
-        collection_name=settings.collection_name,
-        client_settings=chroma_settings,
+    candidates = _candidate_persist_directories(settings)
+    missing: List[str] = []
+    last_error: Optional[Exception] = None
+
+    for candidate in candidates:
+        if not os.path.exists(candidate):
+            missing.append(candidate)
+            continue
+        try:
+            vectorstore = Chroma(
+                persist_directory=candidate,
+                embedding_function=embeddings,
+                collection_name=settings.collection_name,
+                client_settings=chroma_settings,
+            )
+            if os.path.normpath(candidate) != os.path.normpath(settings.persist_directory):
+                print(
+                    "    [WARN] Usando vectorstore alternativo: "
+                    f"{candidate} (configurado: {settings.persist_directory})"
+                )
+            save_last_persist_directory(settings, candidate)
+            return vectorstore
+        except Exception as exc:
+            last_error = exc
+            if _is_disk_io_error(exc):
+                print(
+                    "    [WARN] No se pudo abrir vectorstore en "
+                    f"{candidate}: {type(exc).__name__}: {exc}"
+                )
+                continue
+            raise
+
+    if last_error is not None:
+        raise RuntimeError(
+            "No se pudo abrir ninguna base vectorial candidata. "
+            f"Candidatas: {candidates}"
+        ) from last_error
+
+    raise FileNotFoundError(
+        "No existe una base vectorial utilizable. "
+        f"Candidatas revisadas: {missing or candidates}"
     )
