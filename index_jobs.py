@@ -4,7 +4,7 @@ import os
 import time
 from typing import Dict, List
 
-import rag_utils
+from utils import rag_utils
 from utils.common import load_config_file, normalize_local_path, read_text_file
 
 
@@ -48,6 +48,27 @@ def main():
         description="Indexa jobs en ChromaDB. Cada nueva indexacion reemplaza la anterior."
     )
     parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Archivo de configuracion JSON")
+    parser.add_argument(
+        "--provider",
+        choices=["ollama"],
+        default=None,
+        help="Sobrescribe el provider del JSON.",
+    )
+    parser.add_argument(
+        "--chat-model",
+        default=None,
+        help="Sobrescribe rag.ollama_chat_model para la ejecucion.",
+    )
+    parser.add_argument(
+        "--embedding-model",
+        default=None,
+        help="Sobrescribe rag.ollama_embedding_model para la ejecucion.",
+    )
+    parser.add_argument(
+        "--ollama-base-url",
+        default=None,
+        help="Sobrescribe rag.ollama_base_url para la ejecucion.",
+    )
     args = parser.parse_args()
 
     config = load_config_file(args.config)
@@ -55,12 +76,28 @@ def main():
     match_cfg = config.get("match", {})
 
     settings = rag_utils.settings_from_dict(rag_cfg)
-    settings = rag_utils.settings_from_dict({"reset_db": True}, base=settings)
+    runtime_overrides = {"reset_db": True}
+    if args.provider:
+        runtime_overrides["provider"] = args.provider
+    if args.chat_model:
+        runtime_overrides["ollama_chat_model"] = args.chat_model
+    if args.embedding_model:
+        runtime_overrides["ollama_embedding_model"] = args.embedding_model
+    if args.ollama_base_url:
+        runtime_overrides["ollama_base_url"] = args.ollama_base_url
+    settings = rag_utils.settings_from_dict(runtime_overrides, base=settings)
     rag_utils.validate_env(settings)
 
     t0 = log_step("init embeddings")
     rag_utils.get_embeddings(settings)
-    log_done(t0)
+    log_done(
+        t0,
+        (
+            f"provider={settings.provider} "
+            f"base_url={settings.ollama_base_url} "
+            f"embedding_model={settings.ollama_embedding_model}"
+        ),
+    )
 
     jobs = resolve_job_list(match_cfg)
     if not jobs:
@@ -96,7 +133,7 @@ def main():
     if os.path.normpath(persist_used) != os.path.normpath(settings.persist_directory):
         print(
             "    [WARN] Se uso una ruta fallback. "
-            "Para usarla en matching, actualiza rag.persist_directory en tu config."
+            "Quedo registrada y se reutiliza automaticamente en matching/cv."
         )
 
 
