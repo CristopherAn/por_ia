@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Tuple
 
 from langchain_core.documents import Document
 
-import rag_utils
+from utils import rag_utils
 from utils.common import load_config_file, normalize_local_path, read_text_file
 
 

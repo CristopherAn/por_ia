@@ -36,6 +36,19 @@ flowchart TD
 - `outputs/tailored_cv.json`
 - `outputs/tailored_cv.md`
 
+## Estructura del codigo
+
+Scripts centrales (raiz):
+
+- `index_jobs.py`
+- `match_jobs.py`
+- `generate_cv.py`
+
+Utilidades no centrales (`utils/`):
+
+- `utils/rag_utils.py` (embeddings, Chroma, chunking, fallback de indexacion)
+- `utils/common.py` (helpers de archivos/config)
+
 ## Requisitos
 
 - Python 3.10+
@@ -90,7 +103,9 @@ Ejemplo minimo:
 }
 ```
 
-## Uso
+## Ejecucion
+
+### 1) Local rapido (config principal)
 
 ```bash
 python index_jobs.py --config config/rag_config.json
@@ -98,13 +113,64 @@ python match_jobs.py --config config/rag_config.json
 python generate_cv.py --config config/rag_config.json
 ```
 
-## Docker
+### 2) Local con entorno virtual (PowerShell)
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python index_jobs.py --config config/rag_config.json
+python match_jobs.py --config config/rag_config.json
+python generate_cv.py --config config/rag_config.json
+```
+
+### 3) Ejecucion por etapa
+
+Solo indexar:
+
+```bash
+python index_jobs.py --config config/rag_config.json
+```
+
+Solo matching (requiere index previo):
+
+```bash
+python match_jobs.py --config config/rag_config.json
+```
+
+Solo generar CV (requiere perfil + jobs y opcionalmente reporte de matching):
+
+```bash
+python generate_cv.py --config config/rag_config.json
+```
+
+### 4) Local con config alternativa
+
+Si quieres usar otra base vectorial o rutas de salida, crea una copia de config (por ejemplo `config/mi_config.json`) y ejecuta con `--config`:
+
+```bash
+python index_jobs.py --config config/mi_config.json
+python match_jobs.py --config config/mi_config.json
+python generate_cv.py --config config/mi_config.json
+```
+
+### 5) Docker
 
 ```bash
 docker compose build
 docker compose run --rm rag python index_jobs.py --config config/rag_config.json
 docker compose run --rm rag python match_jobs.py --config config/rag_config.json
 docker compose run --rm rag python generate_cv.py --config config/rag_config.json
+```
+
+### 6) Precondicion Ollama
+
+Antes de ejecutar, verifica Ollama y modelos:
+
+```bash
+ollama serve
+ollama pull llama3.2:3b-instruct-fp16
+ollama pull nomic-embed-text
+ollama list
 ```
 
 ## Troubleshooting
